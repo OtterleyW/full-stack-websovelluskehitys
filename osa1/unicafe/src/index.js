@@ -1,6 +1,25 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+const Button = ({handleClick, text}) => (
+    <button onClick={handleClick}>{text}</button>
+)
+
+const Statistics = (props) => (
+  <div>
+    <Statistic text={props.stats[0].text} value={props.stats[0].value} />
+    <Statistic text={props.stats[1].text} value={props.stats[1].value} />
+    <Statistic text={props.stats[2].text} value={props.stats[2].value} />
+    <Statistic text={props.stats[3].text} value={props.stats[3].value} />
+    <Statistic text={props.stats[4].text} value={props.stats[4].value + '%'} />
+  </div> 
+)
+
+const Statistic = (props) => (
+  
+  <p>{props.text} {props.value}</p>
+)
+
 class App extends React.Component {
     constructor() {
       super()
@@ -40,28 +59,44 @@ class App extends React.Component {
           positiivisia: (this.state.hyva)/(this.state.aanienMaara+1)*100
         })
       }
-
-
-
     
       render() {
+
+        const statistics = {stats:[
+           {
+             text: 'Hyvä:',
+             value: this.state.hyva
+           }, 
+           {
+            text: 'Neutraali:',
+            value: this.state.neutraali
+          },
+          {
+            text: 'Huono:',
+            value: this.state.huono
+          },
+          {
+            text: 'Keskiarvo:',
+            value: this.state.keskiarvo
+          },
+          {
+            text:'Positiivisia:',
+            value: this.state.positiivisia
+          }
+        ]} 
+        
+
         return (
           <div>
               <h1>Anna palautetta</h1>
             <div>
-              <button onClick={this.annaHyva}>Hyvä</button>
-              <button onClick={this.annaNeutraali}>Neutraali</button>
-              <button onClick={this.annaHuono}>Huono</button>
+              <Button handleClick={this.annaHyva} text="Hyvä" />
+              <Button handleClick={this.annaNeutraali} text="Neutraali" />
+              <Button handleClick={this.annaHuono} text="Huono" />
             </div>
                 <h2>Statistiikka</h2>
-            <div>
-                <p>Hyvä: {this.state.hyva}</p>
-                <p>Neutraali: {this.state.neutraali}</p>
-                <p>Huono: {this.state.huono}</p>
-                <p>Äänien määrä: {this.state.aanienMaara}</p>
-                <p>Keskiarvo: {this.state.keskiarvo}</p>
-                <p>Positiivisia: {this.state.positiivisia}%</p>
-            </div>
+            <Statistics stats={statistics.stats} />
+        
           </div>
         )
       }
