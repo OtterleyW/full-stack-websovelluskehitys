@@ -12,18 +12,20 @@ const Statistics = (props) => {
     )
   }
   return(
-  <div>
-    <Statistic text={props.stats[0].text} value={props.stats[0].value} />
-    <Statistic text={props.stats[1].text} value={props.stats[1].value} />
-    <Statistic text={props.stats[2].text} value={props.stats[2].value} />
-    <Statistic text={props.stats[3].text} value={props.stats[3].value} />
-    <Statistic text={props.stats[4].text} value={props.stats[4].value + '%'} />
-  </div> 
+  <table>
+    <tbody>
+      <Statistic text={props.stats[0].text} value={props.stats[0].value} />
+      <Statistic text={props.stats[1].text} value={props.stats[1].value} />
+      <Statistic text={props.stats[2].text} value={props.stats[2].value} />
+      <Statistic text={props.stats[3].text} value={props.stats[3].value} />
+      <Statistic text={props.stats[4].text} value={props.stats[4].value + '%'} />
+    </tbody>
+  </table> 
   )
 }
 
 const Statistic = (props) => (
-  <p>{props.text} {props.value}</p>
+<tr><td>{props.text}</td><td>{props.value}</td></tr>
 )
 
 class App extends React.Component {
