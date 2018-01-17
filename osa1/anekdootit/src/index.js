@@ -26,8 +26,11 @@ class App extends React.Component {
     })
 }
 
-  render() {
-    return (
+  render() {        
+    let votes = this.props.anecdotes.map(anecdotes => anecdotes.votes)
+    let mostVotes = votes.indexOf(Math.max(...votes))
+
+    return ( 
       <div>
        <p> {this.props.anecdotes[this.state.selected].text}</p>
       
@@ -37,6 +40,11 @@ class App extends React.Component {
         </p>
 
         <p> has {this.props.anecdotes[this.state.selected].votes} votes </p>
+        <div>
+            <h2>Anecdote with most votes:</h2>
+            <p>{this.props.anecdotes[mostVotes].text}</p>
+            <p>has {this.props.anecdotes[mostVotes].votes} votes</p>
+        </div>
       </div>
     )
   }
