@@ -26,41 +26,33 @@ class App extends React.Component {
       this.state = {
         hyva: 0,
         neutraali: 0,
-        huono: 0,
-        aanienMaara: 0,
-        keskiarvo: 0,
-        positiivisia: 0 
+        huono: 0
       }
     }
 
   
     annaHyva = () => {
         this.setState({
-          hyva: this.state.hyva + 1,
-          aanienMaara: this.state.aanienMaara + 1,
-          keskiarvo: ((this.state.hyva+1) + this.state.huono * -1) / (this.state.aanienMaara + 1),
-          positiivisia: (this.state.hyva+1)/(this.state.aanienMaara+1)*100
+          hyva: this.state.hyva + 1
       })
       }
     
       annaNeutraali = () => {
         this.setState({
           neutraali: this.state.neutraali + 1,
-          aanienMaara: this.state.aanienMaara + 1,
-          keskiarvo: (this.state.hyva + this.state.huono * -1) / (this.state.aanienMaara + 1),
-          positiivisia: (this.state.hyva)/(this.state.aanienMaara+1)*100
-        })
+      })
       }
       annaHuono = () => {
         this.setState({
           huono: this.state.huono + 1,
-          aanienMaara: this.state.aanienMaara + 1,
-          keskiarvo: (this.state.hyva * 1 + (this.state.huono+1) * -1) / (this.state.aanienMaara + 1),
-          positiivisia: (this.state.hyva)/(this.state.aanienMaara+1)*100
-        })
+           })
       }
     
       render() {
+
+        const aanienMaara = this.state.hyva + this.state.huono + this.state.neutraali
+        const keskiarvo = (this.state.hyva + this.state.huono * -1) / aanienMaara
+        const positiivisia = (this.state.hyva / aanienMaara)*100
 
         const statistics = {stats:[
            {
@@ -77,13 +69,14 @@ class App extends React.Component {
           },
           {
             text: 'Keskiarvo:',
-            value: this.state.keskiarvo
+            value: keskiarvo
           },
           {
             text:'Positiivisia:',
-            value: this.state.positiivisia
+            value: positiivisia
           }
-        ]} 
+        ]}
+
         
 
         return (
