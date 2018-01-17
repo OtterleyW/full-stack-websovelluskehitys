@@ -23,7 +23,6 @@ const Statistics = (props) => {
 }
 
 const Statistic = (props) => (
-  
   <p>{props.text} {props.value}</p>
 )
 
@@ -88,15 +87,14 @@ class App extends React.Component {
 
         return (
           <div>
-              <h1>Anna palautetta</h1>
-            <div>
-              <Button handleClick={this.annaHyva} text="Hyvä" />
-              <Button handleClick={this.annaNeutraali} text="Neutraali" />
-              <Button handleClick={this.annaHuono} text="Huono" />
-            </div>
-                <h2>Statistiikka</h2>
-            <Statistics stats={statistics.stats} />
-        
+            <h1>Anna palautetta</h1>
+              <div>
+                <Button handleClick={this.annaHyva} text="Hyvä" />
+                <Button handleClick={this.annaNeutraali} text="Neutraali" />
+                <Button handleClick={this.annaHuono} text="Huono" />
+              </div>
+            <h2>Statistiikka</h2>
+              <Statistics stats={statistics.stats} />
           </div>
         )
       }
