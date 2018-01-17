@@ -5,7 +5,13 @@ const Button = ({handleClick, text}) => (
     <button onClick={handleClick}>{text}</button>
 )
 
-const Statistics = (props) => (
+const Statistics = (props) => {
+  if(props.stats[0].value === 0 && props.stats[1].value === 0 && props.stats[2].value === 0){
+    return (
+      <div>Yhtään palautetta ei ole annettu!</div>
+    )
+  }
+  return(
   <div>
     <Statistic text={props.stats[0].text} value={props.stats[0].value} />
     <Statistic text={props.stats[1].text} value={props.stats[1].value} />
@@ -13,7 +19,8 @@ const Statistics = (props) => (
     <Statistic text={props.stats[3].text} value={props.stats[3].value} />
     <Statistic text={props.stats[4].text} value={props.stats[4].value + '%'} />
   </div> 
-)
+  )
+}
 
 const Statistic = (props) => (
   
