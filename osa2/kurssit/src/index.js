@@ -9,10 +9,15 @@ const Sisalto = (props) => {
   )
 }
 const Yhteensa = (props) => {
-  const [osa1, osa2, osa3] = props.kurssi.osat
-  
+  const tehtavat = props.kurssi.osat.map(osa=>osa.tehtavia)
+  console.log(tehtavat)
+let yhteensa = 0
+  tehtavat.forEach((luku) => {
+     yhteensa = yhteensa + luku 
+  })
+
   return(
-    <p>yhteensä {osa1.tehtavia + osa2.tehtavia + osa3.tehtavia} tehtävää</p>
+    <p>yhteensä {yhteensa} tehtävää</p>
   )
 }
 
@@ -21,6 +26,7 @@ const Kurssi = (props) => {
     <div>
         <Otsikko kurssi = {props.kurssi} />
         <Sisalto kurssi = {props.kurssi} />
+        <Yhteensa kurssi = {props.kurssi} />
     </div>
     )   
 }
@@ -43,6 +49,11 @@ const App = () => {
         nimi: 'Komponenttien tila',
         tehtavia: 14,
         id: 2
+      },
+      {
+        nimi: 'Komponenttien tila 2',
+        tehtavia: 20,
+        id: 3
       }
     ]
   }
