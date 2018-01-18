@@ -2,14 +2,14 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 const Osa = (props) => <p>{props.osa} {props.tehtavia}</p>
-const Otsikko = (props) => <h1>{props.kurssi.nimi}</h1>
+const Otsikko = (props) => <h1>{props.nimi}</h1>
 const Sisalto = (props) => {
   return(
-      props.kurssi.osat.map(osa=> <Osa key={osa.id} osa={osa.nimi} tehtavia={osa.tehtavia} />)
+      props.osat.map(osa=> <Osa key={osa.id} osa={osa.nimi} tehtavia={osa.tehtavia} />)
   )
 }
 const Yhteensa = (props) => {
-  const tehtavat = props.kurssi.osat.map(osa=>osa.tehtavia)
+  const tehtavat = props.osat.map(osa=>osa.tehtavia)
   const reducer = (acc, curr) => {
     return acc+curr
   }
@@ -26,44 +26,64 @@ let yhteensa = tehtavat.reduce(reducer,0)
 }
 
 const Kurssi = (props) => {
-    return (
+  const rivit = () => props.kurssit.map(kurssi => 
+    <div key ={kurssi.id}>
+          <Otsikko nimi = {kurssi.nimi} />
+          <Sisalto osat = {kurssi.osat} />
+          <Yhteensa osat = {kurssi.osat} />
+      </div>
+    )
+  
+  return(
     <div>
-        <Otsikko kurssi = {props.kurssi} />
-        <Sisalto kurssi = {props.kurssi} />
-        <Yhteensa kurssi = {props.kurssi} />
-    </div>
-    )   
+  {rivit()}
+  </div>
+   )   
 }
 
 const App = () => {
-  const kurssi = {
-    nimi: 'Half Stack -sovelluskehitys',
-    osat: [
-      {
-        nimi: 'Reactin perusteet',
-        tehtavia: 10,
-        id: 0
-      },
-      {
-        nimi: 'Tiedonvälitys propseilla',
-        tehtavia: 7,
-        id: 1
-      },
-      {
-        nimi: 'Komponenttien tila',
-        tehtavia: 14,
-        id: 2
-      },
-      {
-        nimi: 'Komponenttien tila 2',
-        tehtavia: 20,
-        id: 3
-      }
-    ]
-  }
+  const kurssit = [
+    {
+      nimi: 'Half Stack -sovelluskehitys',
+      id: 1,
+      osat: [
+        {
+          nimi: 'Reactin perusteet',
+          tehtavia: 10,
+          id: 1
+        },
+        {
+          nimi: 'Tiedonvälitys propseilla',
+          tehtavia: 7,
+          id: 2
+        },
+        {
+          nimi: 'Komponenttien tila',
+          tehtavia: 14,
+          id: 3
+        }
+      ]
+    },
+    {
+      nimi: 'Node.js',
+      id: 2,
+      osat: [
+        {
+          nimi: 'Routing',
+          tehtavia: 3,
+          id: 1
+        },
+        {
+          nimi: 'Middlewaret',
+          tehtavia: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
   return (
     <div>
-      <Kurssi kurssi={kurssi} />
+      <Kurssi kurssit={kurssit} />
     </div>
   )
 }
