@@ -10,8 +10,12 @@ const Sisalto = (props) => {
 }
 const Yhteensa = (props) => {
   const tehtavat = props.kurssi.osat.map(osa=>osa.tehtavia)
-  console.log(tehtavat)
-let yhteensa = 0
+  const reducer = (acc, curr) => {
+    return acc+curr
+  }
+
+let yhteensa = tehtavat.reduce(reducer,0)
+
   tehtavat.forEach((luku) => {
      yhteensa = yhteensa + luku 
   })
