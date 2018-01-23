@@ -1,11 +1,43 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+const Numbers = ({ persons }) => {
+  return (
+    <ul>
+      {persons.map(person => <Person key={person.name} person={person} />)}
+    </ul>
+  );
+};
 const Person = ({ person }) => {
   return (
     <li>
       {person.name} {person.number}
     </li>
+  );
+};
+
+const Filter = props => {
+  return (
+    <div>
+      Rajaa näytettäviä <input value={props.value} onChange={props.onChange} />
+    </div>
+  );
+};
+
+const Form = props => {
+  return (
+    <form onSubmit={props.onSubmit}>
+      <div>
+        nimi: <input value={props.nameValue} onChange={props.nameOnChange} />
+      </div>
+      <div>
+        numero:
+        <input value={props.numberValue} onChange={props.numberOnChange} />
+      </div>
+      <div>
+        <button type="submit">lisää</button>
+      </div>
+    </form>
   );
 };
 
@@ -72,31 +104,18 @@ class App extends React.Component {
     return (
       <div>
         <h2>Puhelinluettelo</h2>
-        <div>
-          Rajaa näytettäviä{" "}
-          <input value={this.state.filter} onChange={this.handleFilter} />
-        </div>
-        <h3>Lisää uusi</h3>
-        <form onSubmit={this.addPerson}>
-          <div>
-            nimi:{" "}
-            <input value={this.state.newName} onChange={this.handleNewPerson} />
-          </div>
-          <div>
-            numero:
-            <input
-              value={this.state.newNumber}
-              onChange={this.handleNewNumber}
-            />
-          </div>
-          <div>
-            <button type="submit">lisää</button>
-          </div>
-        </form>
+        <Filter value={this.state.filter} onChange={this.handleFilter} />
+        <h3>Lisää uusi numero</h3>
+        <Form
+          onSubmit={this.addPerson}
+          valueName={this.state.newName}
+          nameOnChange={this.handleNewPerson}
+          valueNumber={this.state.newNumber}
+          numberOnChange={this.handleNewNumber}
+        />
+
         <h2>Numerot</h2>
-        <ul>
-          {persons.map(person => <Person key={person.name} person={person} />)}
-        </ul>
+        <Numbers persons={persons} />
       </div>
     );
   }
