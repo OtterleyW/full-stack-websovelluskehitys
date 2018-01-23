@@ -11,9 +11,10 @@ const Filter = props => {
 };
 
 const Results = props => {
+  let resultSet = "";
   if (props.maat instanceof Array) {
     if (props.maat.length === 1) {
-      return (
+      resultSet = (
         <div>
           <h1>
             {props.maat[0].name} {props.maat[0].nativeName}
@@ -22,16 +23,30 @@ const Results = props => {
             capital: {props.maat[0].capital} <br />
             population: {props.maat[0].population}
           </p>
-          <img src={props.maat[0].flag} alt={props.maat[0].name} width="300px" />
+          <img
+            src={props.maat[0].flag}
+            alt={props.maat[0].name}
+            width="300px"
+          />
         </div>
       );
     } else {
+      console.log(props.maat);
+      resultSet = (
+        <ul>
+          {props.maat.map(maa => (
+            <li key={maa.name} onClick={() => props.onClick(maa.name)}>
+              {maa.name}
+            </li>
+          ))}
+        </ul>
+      );
     }
-    console.log(props.maat);
-    return <ul>{props.maat.map(maa => <li key={maa.name}>{maa.name}</li>)}</ul>;
   } else {
-    return <p>{props.maat}</p>;
+    resultSet = <p>{props.maat}</p>;
   }
+
+  return resultSet;
 };
 
 class App extends React.Component {
@@ -41,13 +56,10 @@ class App extends React.Component {
       maat: [],
       filter: ""
     };
-    console.log("constructor");
   }
 
   componentWillMount() {
-    console.log("will mount");
     axios.get("https://restcountries.eu/rest/v2/all").then(response => {
-      console.log("promise fulfilled");
       this.setState({ maat: response.data });
     });
   }
@@ -56,8 +68,11 @@ class App extends React.Component {
     this.setState({ filter: event.target.value });
   };
 
+  pickCountry = name => {
+    this.setState({ filter: name });
+  };
+
   render() {
-    console.log(this.state.maat);
     let maat = this.state.persons;
 
     if (this.state.filter) {
@@ -73,7 +88,7 @@ class App extends React.Component {
     return (
       <div>
         <Filter value={this.state.filter} onChange={this.handleFilter} />
-        <Results maat={maat} />
+        <Results maat={maat} onClick={this.pickCountry} />
       </div>
     );
   }
