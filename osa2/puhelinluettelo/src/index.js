@@ -2,15 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 const Person = ({ person }) => {
-  return <li>{person.name}</li>;
+  return <li>{person.name} {person.number}</li>;
 };
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      persons: [{ name: "Arto Hellas" }],
-      newName: ""
+      persons: [{ name: "Arto Hellas", number:"040-123456" }],
+      newName: "",
+      newNumber: ""
     };
   }
 
@@ -18,7 +19,8 @@ class App extends React.Component {
     event.preventDefault();
 
     const personObject = {
-      name: this.state.newName
+      name: this.state.newName,
+      number: this.state.newNumber
     };
 
     const names = this.state.persons.map(person => person.name)
@@ -28,13 +30,18 @@ class App extends React.Component {
 
       this.setState({
         persons,
-        newName: ""
+        newName: "",
+        newNumber: ""
       });
     } else {alert("Nimi on jo luettelossa!")}
   };
 
   handleNewPerson = event => {
     this.setState({ newName: event.target.value });
+  };
+
+  handleNewNumber = event => {
+    this.setState({ newNumber: event.target.value });
   };
 
   render() {
@@ -45,6 +52,10 @@ class App extends React.Component {
           <div>
             nimi:{" "}
             <input value={this.state.newName} onChange={this.handleNewPerson} />
+          </div>
+          <div>
+            numero: 
+            <input value={this.state.newNumber} onChange={this.handleNewNumber} />
           </div>
           <div>
             <button type="submit">lisää</button>
