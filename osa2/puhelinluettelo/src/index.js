@@ -9,28 +9,31 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      persons: [{name: "Arto Hellas" }],
+      persons: [{ name: "Arto Hellas" }],
       newName: ""
     };
   }
 
   addPerson = event => {
     event.preventDefault();
-    console.log("lisaa henkilo");
+
     const personObject = {
       name: this.state.newName
     };
 
-    const persons = this.state.persons.concat(personObject);
+    const names = this.state.persons.map(person => person.name)
 
-    this.setState({
-      persons,
-      newName: ""
-    });
+    if (!names.includes(personObject.name)) {
+      const persons = this.state.persons.concat(personObject);
+
+      this.setState({
+        persons,
+        newName: ""
+      });
+    } else {alert("Nimi on jo luettelossa!")}
   };
 
   handleNewPerson = event => {
-    console.log(event.target.value);
     this.setState({ newName: event.target.value });
   };
 
@@ -48,7 +51,11 @@ class App extends React.Component {
           </div>
         </form>
         <h2>Numerot</h2>
-        <ul>{this.state.persons.map(person => <Person key={person.name} person={person} />)}</ul>
+        <ul>
+          {this.state.persons.map(person => (
+            <Person key={person.name} person={person} />
+          ))}
+        </ul>
       </div>
     );
   }
