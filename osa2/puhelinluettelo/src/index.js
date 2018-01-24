@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
+import personService from "./services/persons";
 
 const Numbers = ({ persons }) => {
   return (
@@ -54,8 +54,8 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    axios.get("http://localhost:3001/persons").then(response => {
-      this.setState({ persons: response.data });
+    personService.getAll().then(persons => {
+      this.setState({ persons });
     });
   }
 
@@ -72,9 +72,7 @@ class App extends React.Component {
     if (!names.includes(personObject.name)) {
       const persons = this.state.persons.concat(personObject);
 
-      axios
-        .post("http://localhost:3001/persons", personObject)
-        .then(response => {});
+      personService.create(personObject).then(response => {});
 
       this.setState({
         persons,
