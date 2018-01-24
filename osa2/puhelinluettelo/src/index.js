@@ -54,10 +54,8 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        this.setState({ persons: response.data });
+    axios.get("http://localhost:3001/persons").then(response => {
+      this.setState({ persons: response.data });
     });
   }
 
@@ -73,6 +71,10 @@ class App extends React.Component {
 
     if (!names.includes(personObject.name)) {
       const persons = this.state.persons.concat(personObject);
+
+      axios
+        .post("http://localhost:3001/persons", personObject)
+        .then(response => {});
 
       this.setState({
         persons,
