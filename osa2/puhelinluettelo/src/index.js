@@ -82,7 +82,28 @@ class App extends React.Component {
         });
       });
     } else {
-      alert("Nimi on jo luettelossa!");
+      if (
+        window.confirm(
+          `${
+            this.state.newName
+          } on jo luettelossa, korvataanko vanha numero uudella?`
+        )
+      ) {
+        const person = this.state.persons.find(
+          person => person.name === this.state.newName
+        );
+        const newPerson = { ...person, number: this.state.newNumber };
+
+        personService.update(person.id, newPerson).then(response => {
+          this.setState({
+            persons: this.state.persons.map(
+              person => (person.id !== newPerson.id ? person : newPerson)
+            ),
+            newName: "",
+            newNumber: ""
+          });
+        });
+      }
     }
   };
 
