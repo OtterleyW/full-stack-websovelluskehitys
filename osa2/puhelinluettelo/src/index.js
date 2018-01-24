@@ -2,17 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom";
 import personService from "./services/persons";
 
-const Numbers = ({ persons }) => {
+const Numbers = props => {
   return (
     <ul>
-      {persons.map(person => <Person key={person.name} person={person} />)}
+      {props.persons.map(person => (
+        <Person key={person.name} person={person} onClick={props.onClick} />
+      ))}
     </ul>
   );
 };
-const Person = ({ person }) => {
+
+const Person = props => {
   return (
     <li>
-      {person.name} {person.number}
+      {props.person.name} {props.person.number}{" "}
+      <button onClick={() => props.onClick(props.person.id)}>Poista</button>
     </li>
   );
 };
@@ -70,14 +74,12 @@ class App extends React.Component {
     const names = this.state.persons.map(person => person.name);
 
     if (!names.includes(personObject.name)) {
-      const persons = this.state.persons.concat(personObject);
-
-      personService.create(personObject).then(response => {});
-
-      this.setState({
-        persons,
-        newName: "",
-        newNumber: ""
+      personService.create(personObject).then(response => {
+        this.setState({
+          persons: this.state.persons.concat(response),
+          newName: "",
+          newNumber: ""
+        });
       });
     } else {
       alert("Nimi on jo luettelossa!");
@@ -94,6 +96,16 @@ class App extends React.Component {
 
   handleFilter = event => {
     this.setState({ filter: event.target.value });
+  };
+
+  deletePerson = id => {
+    if (window.confirm("Haluatko poistaa henkilön?")) {
+      personService.delet(id).then(response => {
+        this.setState({
+          persons: this.state.persons.filter(person => person.id !== id)
+        });
+      });
+    }
   };
 
   render() {
@@ -119,7 +131,7 @@ class App extends React.Component {
         />
 
         <h2>Numerot</h2>
-        <Numbers persons={persons} />
+        <Numbers persons={persons} onClick={this.deletePerson} />
       </div>
     );
   }
