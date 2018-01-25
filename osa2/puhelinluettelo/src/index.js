@@ -93,7 +93,7 @@ class App extends React.Component {
             newName: "",
             newNumber: "",
             actionMade: true,
-            message: "Uuden henkilön lissäminen onnistui"
+            message: "Uuden henkilön lisääminen onnistui"
           });
           setTimeout(() => {
             this.setState({ actionMade: false });
@@ -137,12 +137,11 @@ class App extends React.Component {
             }, 5000);
           })
           .catch(error => {
-            this.setState({
-              error: true
+            personService.create(personObject).then(response => {
+              personService.getAll().then(response => {
+                this.setState({ persons: response });
+              });
             });
-            setTimeout(() => {
-              this.setState({ actionMade: false, error: false });
-            }, 5000);
           });
       }
     }
@@ -162,24 +161,26 @@ class App extends React.Component {
 
   deletePerson = id => {
     if (window.confirm("Haluatko poistaa henkilön?")) {
-      personService.delet(id).then(response => {
-        this.setState({
-          persons: this.state.persons.filter(person => person.id !== id),
-          actionMade: true,
-          message: "Henkilön poistaminen onnistui"
+      personService
+        .delet(id)
+        .then(response => {
+          this.setState({
+            persons: this.state.persons.filter(person => person.id !== id),
+            actionMade: true,
+            message: "Henkilön poistaminen onnistui"
+          });
+          setTimeout(() => {
+            this.setState({ actionMade: false });
+          }, 5000);
+        })
+        .catch(error => {
+          this.setState({
+            error: true
+          });
+          setTimeout(() => {
+            this.setState({ actionMade: false, error: false });
+          }, 5000);
         });
-        setTimeout(() => {
-          this.setState({ actionMade: false });
-        }, 5000);
-      })
-      .catch(error => {
-        this.setState({
-          error: true
-        });
-        setTimeout(() => {
-          this.setState({ actionMade: false, error: false });
-        }, 5000);
-      });
     }
   };
 
