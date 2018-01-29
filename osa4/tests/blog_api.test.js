@@ -144,6 +144,24 @@ test("blog without title is not added ", async () => {
   expect(response.body.length).toBe(blogs.body.length);
 });
 
+test("blog without url is not added ", async () => {
+  const newBlog = {
+    title: "Urliton blogi",
+    author: "Aku Ankka"
+  };
+
+  const blogs = await api.get("/api/blogs");
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(400);
+
+  const response = await api.get("/api/blogs");
+
+  expect(response.body.length).toBe(blogs.body.length);
+});
+
 afterAll(() => {
   server.close();
 });
