@@ -86,6 +86,48 @@ test("a specific blog is within the returned blogs", async () => {
   expect(titles).toContain("React patterns");
 });
 
+test('new blog can be added ', async () => {
+  const newBlog = {
+    title: 'Awesome blog is awesome',
+    author: "dog",
+    url: "http://www.blogi.fi"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api
+    .get('/api/blogs')
+
+  const titles = response.body.map(r => r.title)
+
+  expect(response.body.length).toBe(blogs.length + 1)
+  expect(titles).toContain('Awesome blog is awesome')
+})
+
+test('blog without title is not added ', async () => {
+  const newBlog = {
+    author: "Aku Ankka",
+    url: "http://www.jee.fi"
+  }
+
+  const blogs = await api
+    .get('/api/blogs')
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const response = await api
+    .get('/api/blogs')
+
+  expect(response.body.length).toBe(blogs.body.length)
+})
+
 afterAll(() => {
   server.close();
 });
