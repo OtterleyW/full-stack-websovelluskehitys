@@ -52,9 +52,41 @@ const mostBlogs = blogs => {
   return writer
 }
 
+
+const mostLikes = blogs => {
+  if (blogs.length === 0) {
+    return undefined
+  }
+
+  const authors = blogs.map(blog => blog.author)
+  let mostLikes = []
+
+  authors.forEach(author => {
+    let findAuthor = mostLikes.filter(blog => blog.author === author)
+    if (findAuthor.length === 0) {
+      let allLikes = 0
+      blogs.forEach(blog => {
+        if (blog.author === author) {
+          allLikes = allLikes + blog.likes
+
+        }
+      })
+      const obj = { author: author, likes: allLikes }
+      mostLikes.push(obj)
+    }
+  })
+
+  const writer = mostLikes.reduce(function(prev, current) {
+    return prev.likes > current.likes ? prev : current
+  })
+  return writer
+}
+
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
