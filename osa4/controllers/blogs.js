@@ -8,14 +8,12 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs);
 });
 
-
 blogsRouter.post('/', async (request, response) => {
   try {
-    console.log(request.token)
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
     if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
+      return response.status(401).json({ error: 'token missing or invalid' });
     }
 
     const body = request.body;
@@ -41,18 +39,42 @@ blogsRouter.post('/', async (request, response) => {
 
     response.json(savedBlog);
   } catch (exception) {
-    if (exception.name === 'JsonWebTokenError' ) {
-      response.status(401).json({ error: exception.message })
+    if (exception.name === 'JsonWebTokenError') {
+      response.status(401).json({ error: exception.message });
     } else {
-      console.log(exception)
-      response.status(500).json({ error: 'something went wrong...' })
+      console.log(exception);
+      response.status(500).json({ error: 'something went wrong...' });
     }
   }
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id);
-  return response.status(200).end();
+  try {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' });
+    }
+
+    let user = await User.findById(decodedToken.id);
+    let blog = await Blog.findById(request.params.id);
+
+    if (blog.user.toString() === user.id.toString()) {
+      await Blog.findByIdAndRemove(request.params.id);
+      return response.status(200).end();
+    } else {
+      return response
+        .status(401)
+        .json({ error: "You can't delete blog you don't own" });
+    }
+  } catch (exception) {
+    if (exception.name === 'JsonWebTokenError') {
+      response.status(401).json({ error: exception.message });
+    } else {
+      console.log(exception);
+      response.status(500).json({ error: 'something went wrong...' });
+    }
+  }
 });
 
 blogsRouter.put('/:id', async (request, response) => {
