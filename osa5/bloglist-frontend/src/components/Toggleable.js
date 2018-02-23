@@ -10,6 +10,7 @@ class Toggleable extends React.Component {
   }
 
   toggleVisibility = () => {
+    console.log("Toggle visibility")
     this.setState({visible: !this.state.visible})
   }
 

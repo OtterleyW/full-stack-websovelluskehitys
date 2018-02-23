@@ -17,6 +17,9 @@ class NewBlogForm extends React.Component {
 
   createBlog = async event => {
     event.preventDefault();
+
+    this.props.toggle();
+
     const blog = {
       title: this.state.title,
       author: this.state.author,

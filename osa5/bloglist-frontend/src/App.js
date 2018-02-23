@@ -3,7 +3,7 @@ import Blog from './components/Blog';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import NewBlogForm from './components/NewBlogForm';
-import Togglable from './components/Toggleable';
+import Toggleable from './components/Toggleable';
 import './App.css';
 
 class App extends React.Component {
@@ -125,13 +125,17 @@ class App extends React.Component {
           <button onClick={this.logOut}>log out</button>
         </p>
         {this.state.notification && notification()}
-        <Togglable buttonLabel="new blog">
-        <NewBlogForm
-          setNotification={this.setNotification}
-          setError={this.setError}
-          getBlogs={this.getBlogs}
-        />
-        </Togglable>
+        <Toggleable
+          buttonLabel="new blog"
+          ref={component => (this.newBlogForm = component)}
+        >
+          <NewBlogForm
+            setNotification={this.setNotification}
+            setError={this.setError}
+            getBlogs={this.getBlogs}
+            toggle={() => this.newBlogForm.toggleVisibility()}
+          />
+        </Toggleable>
         <h2>blogs</h2>
         {this.state.blogs.map(blog => <Blog key={blog._id} blog={blog} />)}
       </div>
