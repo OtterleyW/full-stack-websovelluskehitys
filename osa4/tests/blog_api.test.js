@@ -2,39 +2,47 @@ const supertest = require('supertest');
 const { app, server } = require('../index');
 const api = supertest(app);
 const Blog = require('../models/blog');
-const helper = require('./test_helper');
+const {
+  initialBlogs,
+  format,
+  nonExistingId,
+  blogsInDb
+} = require('./test_helper');
 
 beforeAll(async () => {
   await Blog.remove({});
-  const blogObjects = helper.initialBlogs.map(blog => new Blog(blog));
+  const blogObjects = initialBlogs.map(blog => new Blog(blog));
   const promiseArray = blogObjects.map(blog => blog.save());
   await Promise.all(promiseArray);
 });
 
-test('blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+describe('Returning blogs', async () => {
+  test('blogs are returned as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  test('all blogs are returned', async () => {
+    const blogsAtBeginningOfOperation = await blogsInDb();
+    const response = await api.get('/api/blogs');
+
+    expect(response.body.length).toBe(blogsAtBeginningOfOperation.length);
+  });
+
+  test('a specific blog is within the returned blogs', async () => {
+    const response = await api.get('/api/blogs');
+
+    const titles = response.body.map(r => r.title);
+
+    expect(titles).toContain('React patterns');
+  });
 });
 
-test('all blogs are returned', async () => {
-  const blogsAtBeginningOfOperation = await helper.blogsInDb();
-  const response = await api.get('/api/blogs');
-
-  expect(response.body.length).toBe(blogsAtBeginningOfOperation.length);
-});
-
-test('a specific blog is within the returned blogs', async () => {
-  const response = await api.get('/api/blogs');
-
-  const titles = response.body.map(r => r.title);
-
-  expect(titles).toContain('React patterns');
-});
-
+describe('Adding blogs', async () => {
 test('new blog can be added ', async () => {
-  const blogsAtBeginningOfOperation = await helper.blogsInDb();
+  const blogsAtBeginningOfOperation = await blogsInDb();
 
   const newBlog = {
     title: 'Awesome blog is awesome',
@@ -51,7 +59,7 @@ test('new blog can be added ', async () => {
   const response = await api.get('/api/blogs');
 
   const titles = response.body.map(r => r.title);
-  const blogsAfterOperation = await helper.blogsInDb();
+  const blogsAfterOperation = await blogsInDb();
 
   expect(blogsAfterOperation.length).toBe(
     blogsAtBeginningOfOperation.length + 1
@@ -113,8 +121,9 @@ test('blog without url is not added ', async () => {
 
   expect(response.body.length).toBe(blogs.body.length);
 });
+})
 
-describe('delete blog', async () => {
+describe('Deleting blog', async () => {
   let deleteBlog;
 
   beforeAll(async () => {
