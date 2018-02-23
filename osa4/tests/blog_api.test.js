@@ -41,87 +41,87 @@ describe('Returning blogs', async () => {
 });
 
 describe('Adding blogs', async () => {
-test('new blog can be added ', async () => {
-  const blogsAtBeginningOfOperation = await blogsInDb();
+  test('new blog can be added ', async () => {
+    const blogsAtBeginningOfOperation = await blogsInDb();
 
-  const newBlog = {
-    title: 'Awesome blog is awesome',
-    author: 'dog',
-    url: 'http://www.blogi.fi'
-  };
+    const newBlog = {
+      title: 'Awesome blog is awesome',
+      author: 'dog',
+      url: 'http://www.blogi.fi'
+    };
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
 
-  const response = await api.get('/api/blogs');
+    const response = await api.get('/api/blogs');
 
-  const titles = response.body.map(r => r.title);
-  const blogsAfterOperation = await blogsInDb();
+    const titles = response.body.map(r => r.title);
+    const blogsAfterOperation = await blogsInDb();
 
-  expect(blogsAfterOperation.length).toBe(
-    blogsAtBeginningOfOperation.length + 1
-  );
-  expect(titles).toContain('Awesome blog is awesome');
+    expect(blogsAfterOperation.length).toBe(
+      blogsAtBeginningOfOperation.length + 1
+    );
+    expect(titles).toContain('Awesome blog is awesome');
+  });
+
+  test('if likes is not given likes is 0', async () => {
+    const newBlog = {
+      title: 'Not liked',
+      author: 'dog',
+      url: 'http://www.no.fi'
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const response = await api.get('/api/blogs');
+
+    const blog = response.body.filter(r => r.title === 'Not liked');
+    expect(blog[0].likes).toBe(0);
+  });
+
+  test('blog without title is not added ', async () => {
+    const newBlog = {
+      author: 'Aku Ankka',
+      url: 'http://www.jee.fi'
+    };
+
+    const blogs = await api.get('/api/blogs');
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400);
+
+    const response = await api.get('/api/blogs');
+
+    expect(response.body.length).toBe(blogs.body.length);
+  });
+
+  test('blog without url is not added ', async () => {
+    const newBlog = {
+      title: 'Urliton blogi',
+      author: 'Aku Ankka'
+    };
+
+    const blogs = await api.get('/api/blogs');
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400);
+
+    const response = await api.get('/api/blogs');
+
+    expect(response.body.length).toBe(blogs.body.length);
+  });
 });
-
-test('if likes is not given likes is 0', async () => {
-  const newBlog = {
-    title: 'Not liked',
-    author: 'dog',
-    url: 'http://www.no.fi'
-  };
-
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
-
-  const response = await api.get('/api/blogs');
-
-  const blog = response.body.filter(r => r.title === 'Not liked');
-  expect(blog[0].likes).toBe(0);
-});
-
-test('blog without title is not added ', async () => {
-  const newBlog = {
-    author: 'Aku Ankka',
-    url: 'http://www.jee.fi'
-  };
-
-  const blogs = await api.get('/api/blogs');
-
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(400);
-
-  const response = await api.get('/api/blogs');
-
-  expect(response.body.length).toBe(blogs.body.length);
-});
-
-test('blog without url is not added ', async () => {
-  const newBlog = {
-    title: 'Urliton blogi',
-    author: 'Aku Ankka'
-  };
-
-  const blogs = await api.get('/api/blogs');
-
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(400);
-
-  const response = await api.get('/api/blogs');
-
-  expect(response.body.length).toBe(blogs.body.length);
-});
-})
 
 describe('Deleting blog', async () => {
   let deleteBlog;
@@ -145,6 +145,50 @@ describe('Deleting blog', async () => {
     const blogsAfterOperation = await api.get('/api/blogs');
 
     expect(blogsAfterOperation.body.length).toBe(blogs.body.length - 1);
+  });
+});
+
+describe('Updating blog', async () => {
+  let updateBlog;
+
+  beforeAll(async () => {
+    const newBlog = {
+      title: 'Update this blog',
+      author: 'Aku Ankka',
+      url: 'http://www.jee.fi'
+    };
+
+    const newBlog2 = {
+      title: 'Update this blog',
+      author: 'Aku Ankka',
+      url: 'http://www.jee.fi',
+      likes: 3
+    };
+
+    const response = await api.post('/api/blogs').send(newBlog);
+    updateBlog = response.body._id;
+
+    const response2 = await api.post('/api/blogs').send(newBlog2);
+    updateBlog2 = response2.body._id;
+  });
+
+  test('Update likes of the blog', async () => {
+    const updatedBlog = {
+      title: 'Update this blog',
+      author: 'Aku Ankka',
+      url: 'http://www.jee.fi',
+      likes: '1'
+    };
+    await api
+      .put(`/api/blogs/${updateBlog}`)
+      .send(updatedBlog)
+      .expect(200);
+
+    const response = await api.get('/api/blogs');
+
+    const blog = response.body.filter(blog => blog._id === updateBlog);
+
+    expect(blog[0].likes).toEqual(1);
   });
 });
 
