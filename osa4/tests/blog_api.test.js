@@ -221,6 +221,85 @@ describe.only('when there is initially one user at db', async () => {
     const usernames = usersAfterOperation.map(u=>u.username)
     expect(usernames).toContain(newUser.username)
   })
+
+  test('POST /api/users fails with proper statuscode and message if username already taken', async () => {
+    const usersBeforeOperation = await usersInDb()
+  
+    const newUser = {
+      username: 'root',
+      name: 'Superuser',
+      password: 'salainen'
+    }
+  
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  
+    expect(result.body).toEqual({ error: 'username must be unique'})
+  
+    const usersAfterOperation = await usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
+  })
+
+  test('POST /api/users fails with proper statuscode and message if password is too short', async () => {
+    const usersBeforeOperation = await usersInDb()
+  
+    const newUser = {
+      username: 'rootsie',
+      name: 'Roo T',
+      password: 'sa'
+    }
+  
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  
+    expect(result.body).toEqual({ error: 'password is too short'})
+  
+    const usersAfterOperation = await usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
+  })
+
+  test('New user is set to adult if the value is not given', async () => {
+    const usersBeforeOperation = await usersInDb()
+  
+    const newUser = {
+      username: 'adult',
+      name: 'Adult',
+      password: 'veryadult'
+    }
+  
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect('Content-Type', /application\/json/)
+  
+    expect(result.body.adult).toEqual(true)
+  
+  })
+
+  test('New user is not set to adult if the value is given', async () => {
+    const usersBeforeOperation = await usersInDb()
+  
+    const newUser = {
+      username: 'young',
+      name: 'Not Adult',
+      password: 'notadult',
+      adult: false
+    }
+  
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect('Content-Type', /application\/json/)
+  
+    expect(result.body.adult).toEqual(false)
+  
+  })
 })
 
 afterAll(() => {
