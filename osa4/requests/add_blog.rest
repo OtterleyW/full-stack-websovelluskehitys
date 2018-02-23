@@ -6,3 +6,4 @@ content-type: application/json
   "author": "Eetu Esimerkki",
   "url": "http://malli-url.com"
 }
+
