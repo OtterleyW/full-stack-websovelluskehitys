@@ -1,0 +1,17 @@
+.error{
+  padding: 15px;
+  margin: 15px;
+  border: 3px solid darkred;
+  border-radius: 3px;
+  color: darkred;
+  background: rgba(255, 0, 0, 0.315);
+}
+
+.notification{
+  padding: 15px;
+  margin: 15px;
+  border: 3px solid darkgreen;
+  border-radius: 3px;
+  color: darkgreen;
+  background: rgba(0, 255, 0, 0.315);
+}

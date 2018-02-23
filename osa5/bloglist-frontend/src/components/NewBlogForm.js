@@ -22,9 +22,22 @@ class NewBlogForm extends React.Component {
       url: this.state.url
     };
     blogService.create(blog);
+
+    const text = `Lisätty ${this.state.title} kirjoittajalta ${
+      this.state.author
+    }`;
+
+    this.props.setNotification(text);
+
+    this.setState({
+      title: '',
+      author: '',
+      url: ''
+    });
   };
 
   render() {
+
     return (
       <div>
         <h2>Add new blog</h2>
