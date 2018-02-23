@@ -15,29 +15,35 @@ class NewBlogForm extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  createBlog = () => {
+  createBlog = async event => {
+    event.preventDefault();
     const blog = {
       title: this.state.title,
       author: this.state.author,
       url: this.state.url
     };
-    blogService.create(blog);
 
-    const text = `Lisätty ${this.state.title} kirjoittajalta ${
-      this.state.author
-    }`;
+    try {
+      await blogService.create(blog);
 
-    this.props.setNotification(text);
+      const text = `Lisätty ${this.state.title} kirjoittajalta ${
+        this.state.author
+      }`;
 
-    this.setState({
-      title: '',
-      author: '',
-      url: ''
-    });
+      this.props.setNotification(text);
+      this.props.getBlogs();
+
+      this.setState({
+        title: '',
+        author: '',
+        url: ''
+      });
+    } catch (error) {
+      this.props.setNotification('Unable to save the blog');
+    }
   };
 
   render() {
-
     return (
       <div>
         <h2>Add new blog</h2>

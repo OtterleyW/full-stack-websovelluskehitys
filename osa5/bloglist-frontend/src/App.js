@@ -18,24 +18,28 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    blogService.getAll().then(blogs => this.setState({ blogs }));
-
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser');
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      blogService.setToken(user.token);
-      this.setState({ user });
-    }
-  }
+  getBlogs = () => {
+    console.log('Get blogs');
+    return blogService.getAll().then(blogs => this.setState({ blogs }));
+  };
 
   setNotification = text => {
-    console.log("Set notification", text)
+    console.log('Set notification', text);
     this.setState({
       notification: text
     });
     setTimeout(() => {
       this.setState({ notification: null });
+    }, 5000);
+  };
+
+  setError = text => {
+    console.log('Set error', text);
+    this.setState({
+      error: text
+    });
+    setTimeout(() => {
+      this.setState({ error: null });
     }, 5000);
   };
 
@@ -50,12 +54,7 @@ class App extends React.Component {
       blogService.setToken(user.token);
       this.setState({ username: '', password: '', user });
     } catch (exception) {
-      this.setState({
-        error: 'käyttäjätunnus tai salasana virheellinen'
-      });
-      setTimeout(() => {
-        this.setState({ error: null });
-      }, 5000);
+      this.setError('Wrong username or password');
     }
   };
 
@@ -66,6 +65,16 @@ class App extends React.Component {
 
     window.localStorage.removeItem('loggedNoteappUser');
   };
+
+  componentDidMount() {
+    this.getBlogs();
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser');
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      blogService.setToken(user.token);
+      this.setState({ user });
+    }
+  }
 
   handleLoginFieldChange = event => {
     this.setState({ [event.target.name]: event.target.value });
@@ -116,7 +125,11 @@ class App extends React.Component {
         </p>
         {this.state.notification && notification()}
 
-        <NewBlogForm setNotification={this.setNotification} />
+        <NewBlogForm
+          setNotification={this.setNotification}
+          setError={this.setError}
+          getBlogs={this.getBlogs}
+        />
         <h2>blogs</h2>
         {this.state.blogs.map(blog => <Blog key={blog._id} blog={blog} />)}
       </div>
