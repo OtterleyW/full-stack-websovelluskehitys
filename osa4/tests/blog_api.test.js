@@ -2,10 +2,9 @@ const supertest = require('supertest');
 const { app, server } = require('../index');
 const api = supertest(app);
 const Blog = require('../models/blog');
-const User = require('../models/user')
+const User = require('../models/user');
 const {
   initialBlogs,
-  format,
   nonExistingId,
   blogsInDb,
   usersInDb
@@ -43,13 +42,27 @@ describe('Returning blogs', async () => {
 });
 
 describe('Adding blogs', async () => {
+  let userId;
+
+  beforeAll(async () => {
+    await User.remove({});
+    const newUser = new User({
+      username: 'owner',
+      name: 'Blog Owner',
+      password: 'sekret'
+    });
+    const user = await newUser.save();
+    userId = user._id;
+  });
+
   test('new blog can be added ', async () => {
     const blogsAtBeginningOfOperation = await blogsInDb();
 
     const newBlog = {
       title: 'Awesome blog is awesome',
       author: 'dog',
-      url: 'http://www.blogi.fi'
+      url: 'http://www.blogi.fi',
+      userId: userId
     };
 
     await api
@@ -73,7 +86,8 @@ describe('Adding blogs', async () => {
     const newBlog = {
       title: 'Not liked',
       author: 'dog',
-      url: 'http://www.no.fi'
+      url: 'http://www.no.fi',
+      userId: userId
     };
 
     await api
@@ -91,7 +105,8 @@ describe('Adding blogs', async () => {
   test('blog without title is not added ', async () => {
     const newBlog = {
       author: 'Aku Ankka',
-      url: 'http://www.jee.fi'
+      url: 'http://www.jee.fi',
+      userId: userId
     };
 
     const blogs = await api.get('/api/blogs');
@@ -109,7 +124,8 @@ describe('Adding blogs', async () => {
   test('blog without url is not added ', async () => {
     const newBlog = {
       title: 'Urliton blogi',
-      author: 'Aku Ankka'
+      author: 'Aku Ankka',
+      userId: userId
     };
 
     const blogs = await api.get('/api/blogs');
@@ -127,12 +143,23 @@ describe('Adding blogs', async () => {
 
 describe('Deleting blog', async () => {
   let deleteBlog;
+  let userId;
 
   beforeAll(async () => {
+    await User.remove({});
+    const newUser = new User({
+      username: 'owner',
+      name: 'Blog Owner',
+      password: 'sekret'
+    });
+    const user = await newUser.save();
+    userId = user._id;
+
     const newBlog = {
       title: 'Delete this blog',
       author: 'Aku Ankka',
-      url: 'http://www.jee.fi'
+      url: 'http://www.jee.fi',
+      userId: userId
     };
 
     const response = await api.post('/api/blogs').send(newBlog);
@@ -152,19 +179,31 @@ describe('Deleting blog', async () => {
 
 describe('Updating blog', async () => {
   let updateBlog;
+  let userId;
 
   beforeAll(async () => {
+    await User.remove({});
+    const newUser = new User({
+      username: 'owner',
+      name: 'Blog Owner',
+      password: 'sekret'
+    });
+    const user = await newUser.save();
+    userId = user._id;
+
     const newBlog = {
       title: 'Update this blog',
       author: 'Aku Ankka',
-      url: 'http://www.jee.fi'
+      url: 'http://www.jee.fi',
+      userId: userId
     };
 
     const newBlog2 = {
       title: 'Update this blog',
       author: 'Aku Ankka',
       url: 'http://www.jee.fi',
-      likes: 3
+      likes: 3,
+      userId: userId
     };
 
     const response = await api.post('/api/blogs').send(newBlog);
@@ -194,113 +233,111 @@ describe('Updating blog', async () => {
   });
 });
 
-describe.only('when there is initially one user at db', async () => {
+describe('when there is initially one user at db', async () => {
   beforeAll(async () => {
-    await User.remove({})
-    const user = new User({ username: 'root', password: 'sekret' })
-    await user.save()
-  })
+    await User.remove({});
+    const user = new User({ username: 'root', password: 'sekret' });
+    await user.save();
+  });
 
   test('POST /api/users succeeds with a fresh username', async () => {
-    const usersBeforeOperation = await usersInDb()
+    const usersBeforeOperation = await usersInDb();
 
     const newUser = {
       username: 'otter',
       name: 'Groovy Otter',
       password: 'salainen'
-    }
+    };
 
     await api
       .post('/api/users')
       .send(newUser)
       .expect(200)
-      .expect('Content-Type', /application\/json/)
+      .expect('Content-Type', /application\/json/);
 
-    const usersAfterOperation = await usersInDb()
-    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length+1)
-    const usernames = usersAfterOperation.map(u=>u.username)
-    expect(usernames).toContain(newUser.username)
-  })
+    const usersAfterOperation = await usersInDb();
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length + 1);
+    const usernames = usersAfterOperation.map(u => u.username);
+    expect(usernames).toContain(newUser.username);
+  });
 
   test('POST /api/users fails with proper statuscode and message if username already taken', async () => {
-    const usersBeforeOperation = await usersInDb()
-  
+    const usersBeforeOperation = await usersInDb();
+
     const newUser = {
       username: 'root',
       name: 'Superuser',
       password: 'salainen'
-    }
-  
+    };
+
     const result = await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-      .expect('Content-Type', /application\/json/)
-  
-    expect(result.body).toEqual({ error: 'username must be unique'})
-  
-    const usersAfterOperation = await usersInDb()
-    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
-  })
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body).toEqual({ error: 'username must be unique' });
+
+    const usersAfterOperation = await usersInDb();
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length);
+  });
 
   test('POST /api/users fails with proper statuscode and message if password is too short', async () => {
-    const usersBeforeOperation = await usersInDb()
-  
+    const usersBeforeOperation = await usersInDb();
+
     const newUser = {
       username: 'rootsie',
       name: 'Roo T',
       password: 'sa'
-    }
-  
+    };
+
     const result = await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-      .expect('Content-Type', /application\/json/)
-  
-    expect(result.body).toEqual({ error: 'password is too short'})
-  
-    const usersAfterOperation = await usersInDb()
-    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
-  })
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body).toEqual({ error: 'password is too short' });
+
+    const usersAfterOperation = await usersInDb();
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length);
+  });
 
   test('New user is set to adult if the value is not given', async () => {
-    const usersBeforeOperation = await usersInDb()
-  
+    const usersBeforeOperation = await usersInDb();
+
     const newUser = {
       username: 'adult',
       name: 'Adult',
       password: 'veryadult'
-    }
-  
+    };
+
     const result = await api
       .post('/api/users')
       .send(newUser)
-      .expect('Content-Type', /application\/json/)
-  
-    expect(result.body.adult).toEqual(true)
-  
-  })
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.adult).toEqual(true);
+  });
 
   test('New user is not set to adult if the value is given', async () => {
-    const usersBeforeOperation = await usersInDb()
-  
+    const usersBeforeOperation = await usersInDb();
+
     const newUser = {
       username: 'young',
       name: 'Not Adult',
       password: 'notadult',
       adult: false
-    }
-  
+    };
+
     const result = await api
       .post('/api/users')
       .send(newUser)
-      .expect('Content-Type', /application\/json/)
-  
-    expect(result.body.adult).toEqual(false)
-  
-  })
-})
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.adult).toEqual(false);
+  });
+});
 
 afterAll(() => {
   server.close();

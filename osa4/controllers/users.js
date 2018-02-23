@@ -42,19 +42,11 @@ usersRouter.post('/', async (request, response) => {
   }
 });
 
-const formatUser = (user) => {
-  return {
-    id: user.id,
-    username: user.username,
-    name: user.name,
-    adult: user.adult,
-    blogs: user.blogs
-  }
-}
+
 
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
-  response.json(users.map(formatUser))
+  const users = await User.find({}).populate('blogs', {likes: 1, author: 1, title: 1, url: 1})
+  response.json(users.map(User.format))
 })
 
 module.exports = usersRouter;

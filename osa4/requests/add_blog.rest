@@ -4,6 +4,7 @@ content-type: application/json
 {
 "title": "Uusi blogi",
   "author": "Eetu Esimerkki",
-  "url": "http://malli-url.com"
+  "url": "http://malli-url.com",
+  "userId": "5a90004e36d9201328775325"
 }
 
