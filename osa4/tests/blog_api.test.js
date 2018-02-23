@@ -2,11 +2,13 @@ const supertest = require('supertest');
 const { app, server } = require('../index');
 const api = supertest(app);
 const Blog = require('../models/blog');
+const User = require('../models/user')
 const {
   initialBlogs,
   format,
   nonExistingId,
-  blogsInDb
+  blogsInDb,
+  usersInDb
 } = require('./test_helper');
 
 beforeAll(async () => {
@@ -191,6 +193,35 @@ describe('Updating blog', async () => {
     expect(blog[0].likes).toEqual(1);
   });
 });
+
+describe.only('when there is initially one user at db', async () => {
+  beforeAll(async () => {
+    await User.remove({})
+    const user = new User({ username: 'root', password: 'sekret' })
+    await user.save()
+  })
+
+  test('POST /api/users succeeds with a fresh username', async () => {
+    const usersBeforeOperation = await usersInDb()
+
+    const newUser = {
+      username: 'otter',
+      name: 'Groovy Otter',
+      password: 'salainen'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAfterOperation = await usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length+1)
+    const usernames = usersAfterOperation.map(u=>u.username)
+    expect(usernames).toContain(newUser.username)
+  })
+})
 
 afterAll(() => {
   server.close();
