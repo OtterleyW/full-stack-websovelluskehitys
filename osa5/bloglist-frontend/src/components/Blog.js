@@ -29,9 +29,9 @@ class Blog extends React.Component {
     return (
       <div style={blogStyle}>
         <div style={hideWhenVisible}>
-          <span onClick={this.toggleVisibility}>{blog.title} (by {blog.author})</span><br />
+          <span onClick={this.toggleVisibility} className="information">{blog.title} (by {blog.author})</span><br />
         </div>
-        <div style={showWhenVisible}>
+        <div style={showWhenVisible} className="likes">
           <span onClick={this.toggleVisibility}>{blog.title} (by {blog.author})</span><br />
           <a href={blog.url}>{blog.url}</a><br />
           {blog.likes} likes <button onClick={() => this.props.giveLike(blog)}>like</button><br />
