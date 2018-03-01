@@ -5,8 +5,10 @@ import reducer from './reducer';
 
 const store = createStore(reducer)
 
-const Statistiikka = () => {
-  const palautteita = 0
+const Statistiikka = ({zero}) => {
+  const state = store.getState();
+  console.log("State", state)
+  const palautteita = state.good + state.bad + state.ok
 
   if (palautteita === 0) {
     return (
@@ -24,28 +26,28 @@ const Statistiikka = () => {
         <tbody>
           <tr>
             <td>hyvä</td>
-            <td></td>
+            <td>{state.good}</td>
           </tr>
           <tr>
             <td>neutraali</td>
-            <td></td>
+            <td>{state.ok}</td>
           </tr>
           <tr>
             <td>huono</td>
-            <td></td>
+            <td>{state.bad}</td>
           </tr>
           <tr>
             <td>keskiarvo</td>
-            <td></td>
+            <td>{(state.good - state.bad) / palautteita}</td>
           </tr>
           <tr>
             <td>positiivisia</td>
-            <td></td>
+            <td>{state.good / (palautteita) * 100} %</td>
           </tr>
         </tbody>
       </table>
 
-      <button>nollaa tilasto</button>
+      <button onClick={() => zero()}>nollaa tilasto</button>
     </div >
   )
 }
@@ -62,7 +64,7 @@ class App extends React.Component {
         <button onClick={this.klik('GOOD')}>hyvä</button>
         <button onClick={this.klik('OK')}>neutraali</button>
         <button onClick={this.klik('BAD')}>huono</button>
-        <Statistiikka />
+        <Statistiikka zero={this.klik('ZERO')}/>
       </div>
     )
   }
