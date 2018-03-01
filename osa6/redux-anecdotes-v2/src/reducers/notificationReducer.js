@@ -1,8 +1,8 @@
-const initialState = "Testi notifikaatio"
+const initialState = null
 
 const notificationReducer = (state = initialState, action) => {
   if (action.type === 'SET_NOTIFICATION') {
- console.log("Set notification")
+    return action.notification
   }
 
   return state;
