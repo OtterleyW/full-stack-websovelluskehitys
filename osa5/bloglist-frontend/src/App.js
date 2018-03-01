@@ -22,8 +22,6 @@ class App extends React.Component {
   getBlogs = () => {
     console.log('Get blogs');
     const compareLikes = (a, b) => {
-      console.log("A", a)
-      console.log("B", b)
       return b.likes-a.likes;
     };
 
