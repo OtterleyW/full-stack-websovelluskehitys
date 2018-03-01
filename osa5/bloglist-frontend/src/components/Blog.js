@@ -34,7 +34,7 @@ class Blog extends React.Component {
         <div style={showWhenVisible}>
           <span onClick={this.toggleVisibility}>{blog.title} (by {blog.author})</span><br />
           <a href={blog.url}>{blog.url}</a><br />
-          {blog.likes} likes <button>like</button><br />
+          {blog.likes} likes <button onClick={() => this.props.giveLike(blog)}>like</button><br />
           Added by {blog.user.username}
         </div>
       </div>

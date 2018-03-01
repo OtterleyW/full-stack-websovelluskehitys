@@ -46,6 +46,7 @@ class NewBlogForm extends React.Component {
     }
   };
 
+
   render() {
     return (
       <div>

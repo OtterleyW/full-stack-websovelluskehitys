@@ -21,7 +21,41 @@ class App extends React.Component {
 
   getBlogs = () => {
     console.log('Get blogs');
-    return blogService.getAll().then(blogs => this.setState({ blogs }));
+    const compareLikes = (a, b) => {
+      console.log("A", a)
+      console.log("B", b)
+      return b.likes-a.likes;
+    };
+
+    blogService
+      .getAll()
+      .then(blogs => blogs.sort(compareLikes))
+      .then(blogs => this.setState({ blogs }));
+  };
+
+  giveLike = async blog => {
+    const newLikes = blog.likes + 1;
+    console.log(newLikes);
+
+    const updateBlog = {
+      _id: blog._id,
+      user: blog.user._id,
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: newLikes
+    };
+
+    try {
+      await blogService.update(updateBlog);
+
+      const text = `Tykätty blogista ${blog.title}`;
+
+      this.setNotification(text);
+      this.getBlogs();
+    } catch (error) {
+      this.props.setNotification('Unable to save like the blog');
+    }
   };
 
   setNotification = text => {
@@ -137,7 +171,9 @@ class App extends React.Component {
           />
         </Toggleable>
         <h2>blogs</h2>
-        {this.state.blogs.map(blog => <Blog key={blog._id} blog={blog} />)}
+        {this.state.blogs.map(blog => (
+          <Blog key={blog._id} blog={blog} giveLike={this.giveLike} />
+        ))}
       </div>
     );
   }
