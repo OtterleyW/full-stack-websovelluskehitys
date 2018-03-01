@@ -83,7 +83,7 @@ class App extends React.Component {
         username: this.state.username,
         password: this.state.password
       });
-      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user));
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
       blogService.setToken(user.token);
       this.setState({ username: '', password: '', user });
     } catch (exception) {
@@ -96,12 +96,12 @@ class App extends React.Component {
       user: null
     });
 
-    window.localStorage.removeItem('loggedNoteappUser');
+    window.localStorage.removeItem('loggedBlogAppUser');
   };
 
   componentDidMount() {
     this.getBlogs();
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser');
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       blogService.setToken(user.token);
@@ -122,7 +122,7 @@ class App extends React.Component {
 
     if (this.state.user === null) {
       return (
-        <div>
+        <div className="login-form">
           <h2>Kirjaudu sovellukseen</h2>
           {this.state.error && error()}
           <form onSubmit={this.login}>
@@ -168,10 +168,13 @@ class App extends React.Component {
             toggle={() => this.newBlogForm.toggleVisibility()}
           />
         </Toggleable>
+      
+        <div className="blogs">
         <h2>blogs</h2>
         {this.state.blogs.map(blog => (
           <Blog key={blog._id} blog={blog} giveLike={this.giveLike} />
         ))}
+        </div>
       </div>
     );
   }
