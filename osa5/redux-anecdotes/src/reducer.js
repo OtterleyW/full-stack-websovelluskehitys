@@ -17,7 +17,7 @@ const asObject = anecdote => {
   };
 };
 
-const initialState = anecdotesAtStart.map(asObject);
+let initialState = anecdotesAtStart.map(asObject);
 
 const reducer = (state = initialState, action) => {
   console.log('state now: ', state);
@@ -25,6 +25,7 @@ const reducer = (state = initialState, action) => {
 
   switch (action.type) {
     case 'VOTE':
+    console.log(initialState)
       const anecdote = initialState.filter(a => a.id === action.data.id)[0];
       anecdote.votes = anecdote.votes + 1;
 
@@ -35,6 +36,13 @@ const reducer = (state = initialState, action) => {
       const newState = initialState.sort(compareVotes);
 
       return newState;
+
+    case 'NEW':
+    console.log("New anecdote")
+      const newAnecdote = asObject(action.data.content);
+      console.log("New anecdote", newAnecdote)
+      initialState = initialState.concat(newAnecdote);
+      return initialState
 
     default:
       return state;
