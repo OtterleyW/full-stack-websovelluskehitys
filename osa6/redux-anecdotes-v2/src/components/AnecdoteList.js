@@ -2,19 +2,11 @@ import React from 'react';
 import { voteAnecdote } from '../reducers/anecdoteReducer';
 import { notificationChange } from '../reducers/notificationReducer';
 import { connect } from 'react-redux';
-import anecdoteService from '../services/anecdotes';
 
 class AnecdoteList extends React.Component {
   handleVoteAnecdote = async anecdote => {
-    this.props.voteAnecdote(anecdote.id);
+    this.props.voteAnecdote(anecdote);
 
-    const newAnecdote = {
-      content: anecdote.content,
-      id: anecdote.id,
-      votes: anecdote.votes + 1
-    };
-
-    await anecdoteService.update(newAnecdote);
     this.props.notificationChange(`You voted anecdote: ${anecdote.content}`);
 
     setTimeout(() => this.props.notificationChange(null), 5000);

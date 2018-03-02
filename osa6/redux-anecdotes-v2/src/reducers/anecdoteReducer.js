@@ -20,28 +20,42 @@ const anecdoteReducer = (state = [], action) => {
   return state;
 };
 
-export const voteAnecdote = id => {
-  return {
-    type: 'VOTE',
-    data: { id }
+export const voteAnecdote = anecdote => {
+  console.log("Anecdote", anecdote)
+  return async dispatch => {
+    const newAnecdote = {
+      content: anecdote.content,
+      id: anecdote.id,
+      votes: anecdote.votes + 1
+    };
+
+    await anecdoteService.update(newAnecdote);
+
+    dispatch({
+      type: 'VOTE',
+      data: anecdote
+    });
   };
 };
 
 export const createAnecdote = data => {
-  return {
-    type: 'CREATE',
-    data
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createNew(data);
+    dispatch({
+      type: 'CREATE',
+      data: newAnecdote
+    });
   };
 };
 
 export const anecdoteInitialization = data => {
-  return async (dispatch) => {
-    const notes = await anecdoteService.getAll()
+  return async dispatch => {
+    const notes = await anecdoteService.getAll();
     dispatch({
       type: 'INIT_ANECDOTES',
       data: notes
-    })
-  }
+    });
+  };
 };
 
 export default anecdoteReducer;
