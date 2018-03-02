@@ -1,23 +1,18 @@
 import React from 'react';
 import { voteAnecdote } from '../reducers/anecdoteReducer';
 import { notificationChange } from '../reducers/notificationReducer';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class AnecdoteList extends React.Component {
   voteAnecdote = anecdote => {
-    this.context.store.dispatch(voteAnecdote(anecdote.id));
-    this.context.store.dispatch(
-      notificationChange(`You voted anecdote: ${anecdote.content}`)
-    );
+    this.props.voteAnecdote(anecdote.id);
+    this.props.notificationChange(`You voted anecdote: ${anecdote.content}`);
 
-    setTimeout(
-      () => this.context.store.dispatch(notificationChange(null)),
-      5000
-    );
+    setTimeout(() => this.props.notificationChange(null), 5000);
   };
 
   render() {
-    let { anecdotes, filter } = this.context.store.getState();
+    let { anecdotes, filter } = this.props;
 
     if (filter) {
       anecdotes = anecdotes.filter(anecdote =>
@@ -42,8 +37,16 @@ class AnecdoteList extends React.Component {
   }
 }
 
-AnecdoteList.contextTypes = {
-  store: PropTypes.object
+const mapStateToProps = state => {
+  return {
+    anecdotes: state.anecdotes,
+    filter: state.filter
+  };
 };
 
-export default AnecdoteList;
+const ConnectedAnecdoteList = connect(mapStateToProps, {
+  voteAnecdote,
+  notificationChange
+})(AnecdoteList);
+
+export default ConnectedAnecdoteList;
