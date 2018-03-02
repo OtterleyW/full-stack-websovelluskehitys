@@ -1,40 +1,38 @@
-import React from 'react'
-import { createAnecdote } from '../reducers/anecdoteReducer'
-import { notificationChange } from '../reducers/notificationReducer'
-import PropTypes from 'prop-types'
+import React from 'react';
+import { createAnecdote } from '../reducers/anecdoteReducer';
+import { notificationChange } from '../reducers/notificationReducer';
+import { connect } from 'react-redux';
 
 class AnecdoteForm extends React.Component {
-  handleSubmit = (e) => {
-    e.preventDefault()
-    const content = e.target.anecdote.value
-    this.context.store.dispatch(createAnecdote(content))
+  handleSubmit = e => {
+    e.preventDefault();
+    const content = e.target.anecdote.value;
+    this.props.createAnecdote(content);
 
-    this.context.store.dispatch(
-      notificationChange(`You created anecdote: ${content}`)
-    );
+    this.props.notificationChange(`You created anecdote: ${content}`);
 
-    setTimeout(
-      () => this.context.store.dispatch(notificationChange(null)),
-      5000
-    );
-  
-    e.target.anecdote.value = ''
-  }
-   render() {
-     return (
-       <div>
-      <h2>create new</h2>
+    setTimeout(() => this.props.notificationChange(null), 5000);
+
+    e.target.anecdote.value = '';
+  };
+  render() {
+    return (
+      <div>
+        <h2>create new</h2>
         <form onSubmit={this.handleSubmit}>
-          <div><input name='anecdote'/></div>
-          <button>create</button> 
+          <div>
+            <input name="anecdote" />
+          </div>
+          <button>create</button>
         </form>
       </div>
-     )
-   }
+    );
+  }
 }
 
-AnecdoteForm.contextTypes = {
-  store: PropTypes.object
-}
+const ConnectedAnecdoteForm = connect(
+  null,
+  { createAnecdote, notificationChange  }
+)(AnecdoteForm);
 
-export default AnecdoteForm
+export default ConnectedAnecdoteForm;
