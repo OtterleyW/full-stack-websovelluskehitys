@@ -4,7 +4,7 @@ import { notificationChange } from '../reducers/notificationReducer';
 import { connect } from 'react-redux';
 
 class AnecdoteList extends React.Component {
-  voteAnecdote = anecdote => {
+  handleVoteAnecdote = anecdote => {
     this.props.voteAnecdote(anecdote.id);
     this.props.notificationChange(`You voted anecdote: ${anecdote.content}`);
 
@@ -12,14 +12,7 @@ class AnecdoteList extends React.Component {
   };
 
   render() {
-    let { anecdotes, filter } = this.props;
-
-    if (filter) {
-      anecdotes = anecdotes.filter(anecdote =>
-        anecdote.content.toLowerCase().match(filter.toLowerCase())
-      );
-    }
-
+    const { anecdotes } = this.props;
     return (
       <div>
         <h2>Anecdotes</h2>
@@ -28,7 +21,7 @@ class AnecdoteList extends React.Component {
             <div>{anecdote.content}</div>
             <div>
               has {anecdote.votes}
-              <button onClick={() => this.voteAnecdote(anecdote)}>vote</button>
+              <button onClick={() => this.handleVoteAnecdote(anecdote)}>vote</button>
             </div>
           </div>
         ))}
@@ -37,10 +30,21 @@ class AnecdoteList extends React.Component {
   }
 }
 
+const filterAnecdotes = (anecdotes, filter) => {
+  let filteredAnecdotes = anecdotes;
+
+  if (filter) {
+    filteredAnecdotes = anecdotes.filter(anecdote =>
+      anecdote.content.toLowerCase().match(filter.toLowerCase())
+    );
+  }
+
+  return filteredAnecdotes;
+};
+
 const mapStateToProps = state => {
   return {
-    anecdotes: state.anecdotes,
-    filter: state.filter
+    anecdotes: filterAnecdotes(state.anecdotes, state.filter)
   };
 };
 
