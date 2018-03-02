@@ -1,5 +1,3 @@
-const getId = () => (100000 * Math.random()).toFixed(0);
-
 const anecdoteReducer = (state = [], action) => {
   if (action.type === 'VOTE') {
     const old = state.filter(a => a.id !== action.data.id);
@@ -8,7 +6,10 @@ const anecdoteReducer = (state = [], action) => {
     return [...old, { ...voted, votes: voted.votes + 1 }];
   }
   if (action.type === 'CREATE') {
-    return [...state, { content: action.data.content, id: getId(), votes: 0 }];
+    return [
+      ...state,
+      { content: action.data.content, id: action.data.id, votes: 0 }
+    ];
   }
   if (action.type === 'INIT_ANECDOTES') {
     return action.data;

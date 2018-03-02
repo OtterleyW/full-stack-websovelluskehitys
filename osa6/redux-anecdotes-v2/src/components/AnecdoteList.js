@@ -2,10 +2,19 @@ import React from 'react';
 import { voteAnecdote } from '../reducers/anecdoteReducer';
 import { notificationChange } from '../reducers/notificationReducer';
 import { connect } from 'react-redux';
+import anecdoteService from '../services/anecdotes';
 
 class AnecdoteList extends React.Component {
-  handleVoteAnecdote = anecdote => {
+  handleVoteAnecdote = async anecdote => {
     this.props.voteAnecdote(anecdote.id);
+
+    const newAnecdote = {
+      content: anecdote.content,
+      id: anecdote.id,
+      votes: anecdote.votes + 1
+    };
+
+    await anecdoteService.update(newAnecdote);
     this.props.notificationChange(`You voted anecdote: ${anecdote.content}`);
 
     setTimeout(() => this.props.notificationChange(null), 5000);
@@ -13,18 +22,23 @@ class AnecdoteList extends React.Component {
 
   render() {
     const { anecdotes } = this.props;
+
     return (
       <div>
         <h2>Anecdotes</h2>
-        {anecdotes.sort((a, b) => b.votes - a.votes).map(anecdote => (
-          <div key={anecdote.id}>
-            <div>{anecdote.content}</div>
-            <div>
-              has {anecdote.votes}
-              <button onClick={() => this.handleVoteAnecdote(anecdote)}>vote</button>
+        {anecdotes.sort((a, b) => b.votes - a.votes).map(anecdote => {
+          return (
+            <div key={anecdote.id}>
+              <div>{anecdote.content}</div>
+              <div>
+                has {anecdote.votes}
+                <button onClick={() => this.handleVoteAnecdote(anecdote)}>
+                  vote
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   }
