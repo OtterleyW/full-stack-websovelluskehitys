@@ -14,56 +14,14 @@ import NewBlogForm from './components/NewBlogForm';
 import Toggleable from './components/Toggleable';
 import BlogList from './components/BlogList';
 import Notification from './components/Notification';
-
+import User from './components/User'
+import Users from './components/Users'
 import { notify } from './reducers/notificationReducer';
 
 import './App.css';
 
-const Users = props => {
-  const userRows = props.users.map(user => (
-    <tr key={user.id}>
-      <td>
-        <Link to={`/users/${user.id}`}>{user.name}</Link>
-      </td>
-      <td>{user.blogs.length}</td>
-    </tr>
-  ));
 
-  return (
-    <div className="users">
-      <h2>users</h2>
-      <table>
-        <thead>
-          <tr>
-            <td width="150px" />
-            <td>
-              <h3>blogs added</h3>
-            </td>
-          </tr>
-        </thead>
-        <tbody>{userRows}</tbody>
-      </table>
-    </div>
-  );
-};
 
-const User = ({user}) => {
-
-  if(!user){
-    return null
-  }
-  console.log(user)
-
-  const blogs = user.blogs.map(blog => <p>{blog.title}</p>)
-  return(
-  <div>
-    <h2>{user.name}</h2>
-
-    <h3>Added blogs</h3>
-    {blogs}
-    
-  </div>
-)}
 
 
 class App extends React.Component {
