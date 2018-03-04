@@ -173,15 +173,14 @@ class App extends React.Component {
     return (
       <Router>
         <div>
+          <h1>Blog app</h1>
           <div>
             <Link to="/">blogs</Link> &nbsp;
             <Link to="/users">users</Link>
+           {' - '} {this.state.user.name} logged in{' '}
+            <button onClick={this.logOut}>log out</button>
           </div>
 
-          <p>
-            {this.state.user.name} logged in{' '}
-            <button onClick={this.logOut}>log out</button>
-          </p>
           <Notification />
 
           <Toggleable
