@@ -1,9 +1,13 @@
 import React from 'react';
-import Blog from './components/Blog';
+import { connect } from 'react-redux'
 import blogService from './services/blogs';
 import loginService from './services/login';
 import NewBlogForm from './components/NewBlogForm';
 import Toggleable from './components/Toggleable';
+import BlogList from './components/BlogList'
+import Notification from './components/Notification';
+import { notify } from './reducers/notificationReducer';
+
 import './App.css';
 
 class App extends React.Component {
@@ -12,7 +16,6 @@ class App extends React.Component {
     this.state = {
       blogs: [],
       error: null,
-      notification: null,
       username: '',
       password: '',
       user: null
@@ -58,12 +61,8 @@ class App extends React.Component {
 
   setNotification = text => {
     console.log('Set notification', text);
-    this.setState({
-      notification: text
-    });
-    setTimeout(() => {
-      this.setState({ notification: null });
-    }, 5000);
+    this.props.notify(text, 10)
+
   };
 
   setError = text => {
@@ -156,7 +155,7 @@ class App extends React.Component {
           {this.state.user.name} logged in{' '}
           <button onClick={this.logOut}>log out</button>
         </p>
-        {this.state.notification && notification()}
+       <Notification />
         <Toggleable
           buttonLabel="new blog"
           ref={component => (this.newBlogForm = component)}
@@ -168,16 +167,18 @@ class App extends React.Component {
             toggle={() => this.newBlogForm.toggleVisibility()}
           />
         </Toggleable>
+
+        <BlogList blogs={this.state.blogs} giveLike={this.giveLike}/>
       
-        <div className="blogs">
-        <h2>blogs</h2>
-        {this.state.blogs.map(blog => (
-          <Blog key={blog._id} blog={blog} giveLike={this.giveLike} />
-        ))}
-        </div>
+       
       </div>
     );
   }
 }
 
-export default App;
+
+export default connect(
+  null,
+  { notify }
+)(App)
+

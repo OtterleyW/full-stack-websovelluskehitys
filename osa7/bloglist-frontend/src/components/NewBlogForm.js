@@ -1,5 +1,7 @@
 import React from 'react';
 import blogService from '../services/blogs';
+import { notify } from '../reducers/notificationReducer';
+import { connect } from 'react-redux';
 
 class NewBlogForm extends React.Component {
   constructor(props) {
@@ -33,7 +35,7 @@ class NewBlogForm extends React.Component {
         this.state.author
       }`;
 
-      this.props.setNotification(text);
+      this.props.notify(text, 5);
       this.props.getBlogs();
 
       this.setState({
@@ -42,10 +44,9 @@ class NewBlogForm extends React.Component {
         url: ''
       });
     } catch (error) {
-      this.props.setNotification('Unable to save the blog');
+      this.props.notify('Unable to save the blog', 5);
     }
   };
-
 
   render() {
     return (
@@ -86,4 +87,8 @@ class NewBlogForm extends React.Component {
   }
 }
 
-export default NewBlogForm;
+const ConnectedNewBlogForm = connect(null, {
+  notify
+})(NewBlogForm);
+
+export default ConnectedNewBlogForm;
