@@ -5,13 +5,31 @@ import {
   Link,
   NavLink
 } from 'react-router-dom';
-import { ListGroup, ListGroupItem, Grid, Row, Col } from 'react-bootstrap'
-
+import {
+  ListGroup,
+  ListGroupItem,
+  Grid,
+  Row,
+  Col,
+  Alert,
+  FormGroup,
+  FormControl,
+  ControlLabel,
+  Button,
+  PageHeader,
+  Image,
+  Well,
+  Badge,
+  Glyphicon,
+  Panel,
+  Jumbotron
+} from 'react-bootstrap';
 
 const Menu = () => {
   const menuStyle = {
     backgroundColor: 'pink',
-    padding: 10
+    padding: 10,
+    textAlign: 'center'
   };
 
   const activeLink = {
@@ -22,14 +40,14 @@ const Menu = () => {
   return (
     <div style={menuStyle}>
       <NavLink activeStyle={activeLink} exact to="/">
-        anecdotes
-      </NavLink>&nbsp;
+        <Glyphicon glyph="list-alt" /> anecdotes
+      </NavLink>&nbsp;&nbsp;&nbsp;&nbsp;
       <NavLink activeStyle={activeLink} exact to="/create">
-        create new
-      </NavLink>&nbsp;
+        <Glyphicon glyph="pencil" /> create new
+      </NavLink>&nbsp;&nbsp;&nbsp;&nbsp;
       <NavLink activeStyle={activeLink} exact to="/about">
-        about
-      </NavLink>&nbsp;
+        <Glyphicon glyph="info-sign" /> about
+      </NavLink>&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
   );
 };
@@ -40,6 +58,7 @@ const AnecdoteList = ({ anecdotes }) => (
     <ListGroup>
       {anecdotes.map(anecdote => (
         <ListGroupItem key={anecdote.id}>
+          <Glyphicon glyph="heart-empty" />{' '}
           <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
         </ListGroupItem>
       ))}
@@ -53,7 +72,9 @@ const Anecdote = ({ anecdote }) => {
       <h2>
         {anecdote.content} by {anecdote.author}
       </h2>
-      <div>has {anecdote.votes} votes</div>
+      <div>
+        has <Badge>{anecdote.votes}</Badge> votes
+      </div>
       <div>
         For more info see <a href={anecdote.info}>{anecdote.info}</a>
       </div>
@@ -65,33 +86,47 @@ const About = () => (
   <Grid>
     <Row>
       <Col xs={12} md={8}>
-    <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
+        <Panel>
+          <Panel.Heading>
+            <Panel.Title componentClass="h2">About anecdote app</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body>
+            <p>According to Wikipedia:</p>
 
-    <em>
-      An anecdote is a brief, revealing account of an individual person or an
-      incident. Occasionally humorous, anecdotes differ from jokes because their
-      primary purpose is not simply to provoke laughter but to reveal a truth
-      more general than the brief tale itself, such as to characterize a person
-      by delineating a specific quirk or trait, to communicate an abstract idea
-      about a person, place, or thing through the concrete details of a short
-      narrative. An anecdote is "a story with a point."
-    </em>
+            <em>
+              An anecdote is a brief, revealing account of an individual person
+              or an incident. Occasionally humorous, anecdotes differ from jokes
+              because their primary purpose is not simply to provoke laughter
+              but to reveal a truth more general than the brief tale itself,
+              such as to characterize a person by delineating a specific quirk
+              or trait, to communicate an abstract idea about a person, place,
+              or thing through the concrete details of a short narrative. An
+              anecdote is "a story with a point."
+            </em>
 
-    <p>
-      Software engineering is full of excellent anecdotes, at this app you can
-      find the best and add more.
-    </p>
-    </Col>
-    <Col xs={6} md={4}>
-    <div><img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Grace_Hopper.jpg" alt="Grace Hopper" width="80%"/></div>
-    </Col>
+            <p>
+              Software engineering is full of excellent anecdotes, at this app
+              you can find the best and add more.
+            </p>
+          </Panel.Body>
+        </Panel>
+      </Col>
+      <Col xs={6} md={4}>
+        <div>
+          <Image
+            src="https://upload.wikimedia.org/wikipedia/commons/5/55/Grace_Hopper.jpg"
+            alt="Grace Hopper"
+            width="80%"
+            thumbnail
+          />
+        </div>
+      </Col>
     </Row>
   </Grid>
 );
 
 const Footer = () => (
-  <div>
+  <Well bsSize="small">
     Anecdote app for{' '}
     <a href="https://courses.helsinki.fi/fi/TKT21009/121540749">
       Full Stack -sovelluskehitys
@@ -100,7 +135,7 @@ const Footer = () => (
       https://github.com/mluukkai/routed-anecdotes
     </a>{' '}
     for the source code.
-  </div>
+  </Well>
 );
 
 class CreateNew extends React.Component {
@@ -136,31 +171,32 @@ class CreateNew extends React.Component {
       <div>
         <h2>create a new anecdote</h2>
         <form onSubmit={this.handleSubmit}>
-          <div>
-            content
-            <input
+          <FormGroup>
+            <ControlLabel>content</ControlLabel>
+            <FormControl
               name="content"
               value={this.state.content}
               onChange={this.handleChange}
             />
-          </div>
-          <div>
-            author
-            <input
+
+            <ControlLabel>author</ControlLabel>
+            <FormControl
               name="author"
               value={this.state.author}
               onChange={this.handleChange}
             />
-          </div>
-          <div>
-            url for more info
-            <input
+
+            <ControlLabel>url for more info</ControlLabel>
+            <FormControl
               name="info"
               value={this.state.info}
               onChange={this.handleChange}
             />
-          </div>
-          <button>create</button>
+            <br />
+            <Button bsStyle="success" type="submit">
+              create
+            </Button>
+          </FormGroup>
         </form>
       </div>
     );
@@ -226,26 +262,28 @@ class App extends React.Component {
   };
 
   render() {
-    const notificationStyle = {
-      border: '1px solid green',
-      borderRadius: 5,
-      padding: 10,
-      margin: 10,
-      color: 'green',
-      fontWeight: 'bold'
-    };
-
     const notification = (
-      <div style={notificationStyle}>{this.state.notification}</div>
+      <Alert bsStyle="success">{this.state.notification}</Alert>
     );
 
     return (
       <div className="container">
         <Router>
           <div>
-            <h1>Software anecdotes</h1>
+         
 
-            <Menu />
+            <Jumbotron>
+            <PageHeader>Software anecdotes</PageHeader>
+  <p>
+  Software engineering is full of excellent anecdotes, at this app you can find the best and add more.
+  </p>
+
+     <Menu />
+
+</Jumbotron>
+
+            
+
             {this.state.notification ? notification : null}
             <Route
               exact
