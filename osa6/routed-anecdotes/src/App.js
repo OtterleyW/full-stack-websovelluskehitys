@@ -5,7 +5,7 @@ import {
   Link,
   NavLink
 } from 'react-router-dom';
-import { ListGroup, ListGroupItem } from 'react-bootstrap'
+import { ListGroup, ListGroupItem, Grid, Row, Col } from 'react-bootstrap'
 
 
 const Menu = () => {
@@ -62,7 +62,9 @@ const Anecdote = ({ anecdote }) => {
 };
 
 const About = () => (
-  <div>
+  <Grid>
+    <Row>
+      <Col xs={12} md={8}>
     <h2>About anecdote app</h2>
     <p>According to Wikipedia:</p>
 
@@ -80,7 +82,12 @@ const About = () => (
       Software engineering is full of excellent anecdotes, at this app you can
       find the best and add more.
     </p>
-  </div>
+    </Col>
+    <Col xs={6} md={4}>
+    <div><img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Grace_Hopper.jpg" alt="Grace Hopper" width="80%"/></div>
+    </Col>
+    </Row>
+  </Grid>
 );
 
 const Footer = () => (
