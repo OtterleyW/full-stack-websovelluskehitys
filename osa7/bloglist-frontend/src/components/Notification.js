@@ -9,10 +9,10 @@ class Notification extends React.Component {
       borderWidth: 1
     };
 
-    if(this.props.notifications){
+    if (this.props.notifications) {
       return <div style={style}>{this.props.notifications}</div>;
     }
-    return null
+    return null;
   }
 }
 

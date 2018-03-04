@@ -1,11 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  NavLink
+} from 'react-router-dom';
+
 import blogService from './services/blogs';
+import userService from './services/users';
 import loginService from './services/login';
 import NewBlogForm from './components/NewBlogForm';
 import Toggleable from './components/Toggleable';
-import BlogList from './components/BlogList'
+import BlogList from './components/BlogList';
 import Notification from './components/Notification';
+import Users from './components/Users';
 import { notify } from './reducers/notificationReducer';
 
 import './App.css';
@@ -15,6 +24,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       blogs: [],
+      users: [],
       error: null,
       username: '',
       password: '',
@@ -25,13 +35,20 @@ class App extends React.Component {
   getBlogs = () => {
     console.log('Get blogs');
     const compareLikes = (a, b) => {
-      return b.likes-a.likes;
+      return b.likes - a.likes;
     };
 
     blogService
       .getAll()
       .then(blogs => blogs.sort(compareLikes))
       .then(blogs => this.setState({ blogs }));
+  };
+
+  getUsers = () => {
+    console.log('Get users');
+    userService
+      .getAll()
+      .then(users => this.setState({ users }));
   };
 
   giveLike = async blog => {
@@ -61,8 +78,7 @@ class App extends React.Component {
 
   setNotification = text => {
     console.log('Set notification', text);
-    this.props.notify(text, 10)
-
+    this.props.notify(text, 10);
   };
 
   setError = text => {
@@ -100,6 +116,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.getBlogs();
+    this.getUsers();
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
@@ -114,10 +131,6 @@ class App extends React.Component {
 
   render() {
     const error = () => <div className="error">{this.state.error}</div>;
-
-    const notification = () => (
-      <div className="notification">{this.state.notification}</div>
-    );
 
     if (this.state.user === null) {
       return (
@@ -150,35 +163,43 @@ class App extends React.Component {
     }
 
     return (
-      <div>
-        <p>
-          {this.state.user.name} logged in{' '}
-          <button onClick={this.logOut}>log out</button>
-        </p>
-       <Notification />
-        <Toggleable
-          buttonLabel="new blog"
-          ref={component => (this.newBlogForm = component)}
-        >
-          <NewBlogForm
-            setNotification={this.setNotification}
-            setError={this.setError}
-            getBlogs={this.getBlogs}
-            toggle={() => this.newBlogForm.toggleVisibility()}
-          />
-        </Toggleable>
+      <Router>
+        <div>
+          <div>
+            <Link to="/">blogs</Link> &nbsp;
+            <Link to="/users">users</Link>
+          </div>
 
-        <BlogList blogs={this.state.blogs} giveLike={this.giveLike}/>
-      
-       
-      </div>
+          <p>
+            {this.state.user.name} logged in{' '}
+            <button onClick={this.logOut}>log out</button>
+          </p>
+          <Notification />
+
+          <Toggleable
+            buttonLabel="new blog"
+            ref={component => (this.newBlogForm = component)}
+          >
+            <NewBlogForm
+              setNotification={this.setNotification}
+              setError={this.setError}
+              getBlogs={this.getBlogs}
+              toggle={() => this.newBlogForm.toggleVisibility()}
+            />
+          </Toggleable>
+
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <BlogList blogs={this.state.blogs} giveLike={this.giveLike} />
+            )}
+          />
+          <Route path="/users" render={() => <Users users={this.state.users} />} />
+        </div>
+      </Router>
     );
   }
 }
 
-
-export default connect(
-  null,
-  { notify }
-)(App)
-
+export default connect(null, { notify })(App);
