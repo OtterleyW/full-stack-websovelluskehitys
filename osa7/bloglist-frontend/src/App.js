@@ -14,10 +14,57 @@ import NewBlogForm from './components/NewBlogForm';
 import Toggleable from './components/Toggleable';
 import BlogList from './components/BlogList';
 import Notification from './components/Notification';
-import Users from './components/Users';
+
 import { notify } from './reducers/notificationReducer';
 
 import './App.css';
+
+const Users = props => {
+  const userRows = props.users.map(user => (
+    <tr key={user.id}>
+      <td>
+        <Link to={`/users/${user.id}`}>{user.name}</Link>
+      </td>
+      <td>{user.blogs.length}</td>
+    </tr>
+  ));
+
+  return (
+    <div className="users">
+      <h2>users</h2>
+      <table>
+        <thead>
+          <tr>
+            <td width="150px" />
+            <td>
+              <h3>blogs added</h3>
+            </td>
+          </tr>
+        </thead>
+        <tbody>{userRows}</tbody>
+      </table>
+    </div>
+  );
+};
+
+const User = ({user}) => {
+
+  if(!user){
+    return null
+  }
+  console.log(user)
+
+  const blogs = user.blogs.map(blog => <p>{blog.title}</p>)
+  return(
+  <div>
+    <h2>{user.name}</h2>
+
+    <h3>Added blogs</h3>
+    {blogs}
+    
+  </div>
+)}
+
 
 class App extends React.Component {
   constructor(props) {
@@ -132,6 +179,16 @@ class App extends React.Component {
   render() {
     const error = () => <div className="error">{this.state.error}</div>;
 
+    const userById = (id) =>{
+      console.log("Find user with id", id)
+      console.log("All users to find", this.state.users)
+      const user = this.state.users.find(user => user.id === id)
+      console.log("User found", user)
+      return user
+    }
+
+    
+  
     if (this.state.user === null) {
       return (
         <div className="login-form">
@@ -195,7 +252,11 @@ class App extends React.Component {
               <BlogList blogs={this.state.blogs} giveLike={this.giveLike} />
             )}
           />
-          <Route path="/users" render={() => <Users users={this.state.users} />} />
+          <Route exact path="/users" render={() => <Users users={this.state.users} />} />
+
+          <Route exact path="/users/:id" render={({match}) =>
+        <User user={userById(match.params.id)} />}
+      />
         </div>
       </Router>
     );
