@@ -82,12 +82,15 @@ class CreateNew extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    const notification = this.state.content
     this.props.addNew({
       content: this.state.content,
       author: this.state.author,
       info: this.state.info,
       votes: 0
     });
+    this.props.setNotification(`a new anecdote ${notification} created`)
+    this.props.history.push('/')
   };
 
   render() {
@@ -159,6 +162,19 @@ class App extends React.Component {
 
   anecdoteById = id => this.state.anecdotes.find(a => a.id === id);
 
+  setNotification = notification => {
+    this.setState({
+      notification
+    })
+
+    setTimeout(() => {
+      this.setState({
+        notification: ''
+      })
+    }, 10000)
+    
+  }
+
   vote = id => {
     const anecdote = this.anecdoteById(id);
 
@@ -180,7 +196,7 @@ class App extends React.Component {
             <h1>Software anecdotes</h1>
 
              <Menu />
-
+            <div>{this.state.notification}</div>
             <Route
               exact
               path="/"
@@ -192,7 +208,7 @@ class App extends React.Component {
       />
             <Route
               path="/create"
-              render={() => <CreateNew addNew={this.addNew} />}
+              render={({history}) => <CreateNew history={history} addNew={this.addNew} setNotification={this.setNotification}/>}
             />
             <Route path="/about" render={() => <About />} />
 
