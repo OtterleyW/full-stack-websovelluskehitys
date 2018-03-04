@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/blogs/ HTTP/1.1
+content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3RpZSIsImlkIjoiNWE5MDA0N2YzYTNhZmExNTkxY2NiZTMyIiwiaWF0IjoxNTE5MzkyNDk2fQ.EY3MoRXPJEWLz4YFQshEXM2_xB1rDr-OzjKExdyRhUg
+
+{
+"title": "Uusi blogi 2",
+  "author": "Eetu Esimerkki",
+  "url": "http://malli-url.com",
+  "userId": "5a90004e36d9201328775325"
+}
+
