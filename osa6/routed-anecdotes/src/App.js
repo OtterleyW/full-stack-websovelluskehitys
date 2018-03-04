@@ -189,6 +189,18 @@ class App extends React.Component {
   };
 
   render() {
+    const notificationStyle = {
+      border: "1px solid green",
+      borderRadius: 5,
+      padding: 10,
+      margin: 10,
+      color: 'green',
+      fontWeight: 'bold'
+    }
+
+    const notification = 
+      <div style={notificationStyle}>{this.state.notification}</div>
+
     return (
       <div>
         <Router>
@@ -196,7 +208,7 @@ class App extends React.Component {
             <h1>Software anecdotes</h1>
 
              <Menu />
-            <div>{this.state.notification}</div>
+           {this.state.notification ? notification : null}
             <Route
               exact
               path="/"
