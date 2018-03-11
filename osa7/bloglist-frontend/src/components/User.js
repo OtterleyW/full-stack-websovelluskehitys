@@ -6,7 +6,7 @@ const User = ({user}) => {
   }
   console.log(user)
 
-  const blogs = user.blogs.map(blog => <p>{blog.title}</p>)
+  const blogs = user.blogs.map(blog => <p key={blog._id}>{blog.title}</p>)
   return(
   <div>
     <h2>{user.name}</h2>

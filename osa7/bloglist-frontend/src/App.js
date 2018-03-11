@@ -20,6 +20,8 @@ import Blog from './components/Blog';
 import { notify } from './reducers/notificationReducer';
 
 import './App.css';
+import { Container } from 'semantic-ui-react'
+
 
 class App extends React.Component {
   constructor(props) {
@@ -34,16 +36,15 @@ class App extends React.Component {
     };
   }
 
-  getBlogs = () => {
+  getBlogs = async () => {
     console.log('Get blogs');
     const compareLikes = (a, b) => {
       return b.likes - a.likes;
     };
 
-    blogService
-      .getAll()
-      .then(blogs => blogs.sort(compareLikes))
-      .then(blogs => this.setState({ blogs }));
+    const blogs = await blogService.getAll();
+    blogs.sort(compareLikes);
+    this.setState({ blogs });
   };
 
   getUsers = () => {
@@ -171,13 +172,14 @@ class App extends React.Component {
     }
 
     return (
+      <Container>
       <Router>
         <div>
           <h1>Blog app</h1>
           <div>
             <Link to="/">blogs</Link> &nbsp;
             <Link to="/users">users</Link>
-           {' - '} {this.state.user.name} logged in{' '}
+            {' - '} {this.state.user.name} logged in{' '}
             <button onClick={this.logOut}>log out</button>
           </div>
 
@@ -222,6 +224,7 @@ class App extends React.Component {
           />
         </div>
       </Router>
+      </Container>
     );
   }
 }
