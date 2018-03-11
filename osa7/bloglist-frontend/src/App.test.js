@@ -38,14 +38,14 @@ describe('<App />', () => {
       app.update();
       const loggedUserJSON = localStorage.getItem('loggedBlogAppUser');
 
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      blogService.token = user.token;
-      app.setState({ user });
-    }
+      if (loggedUserJSON) {
+        const user = JSON.parse(loggedUserJSON);
+        blogService.token = user.token;
+        app.setState({ user });
+      }
 
-    const blogComponents = app.find(Blog)
-    expect(blogComponents.length).toEqual(blogService.blogs.length)
+      const blogComponents = app.find(Blog);
+      expect(blogComponents.length).toEqual(blogService.blogs.length);
     });
   });
 });

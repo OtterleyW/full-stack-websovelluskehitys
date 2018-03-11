@@ -67,7 +67,7 @@ class NewBlogForm extends React.Component {
           </div>
           <div>
             <Form.Field>
-            <label>author</label>
+              <label>author</label>
               <input
                 type="text"
                 name="author"
@@ -78,7 +78,7 @@ class NewBlogForm extends React.Component {
           </div>
           <div>
             <Form.Field>
-            <label>url</label>
+              <label>url</label>
               <input
                 type="text"
                 name="url"
@@ -88,8 +88,11 @@ class NewBlogForm extends React.Component {
             </Form.Field>
           </div>
           <br />
-          <Button basic color='green'>Save</Button>
-          <br /><br />
+          <Button basic color="green">
+            Save
+          </Button>
+          <br />
+          <br />
         </Form>
       </div>
     );
