@@ -25,7 +25,7 @@ app.use(middleware.error);
 app.use('/api/blogs', blogsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter)
-//app.use(express.static('build'))
+app.use(express.static('build'))
 
 const server = http.createServer(app);
 
