@@ -5,6 +5,6 @@ content-type: application/json
 "username": "testi",
     "name": "Testi testaaja",
     "password": "testaanpa",
-    "adult": false
+    "adult": true
 }
 
