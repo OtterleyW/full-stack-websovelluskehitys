@@ -1,11 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  NavLink
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import blogService from './services/blogs';
 import userService from './services/users';
@@ -20,8 +15,7 @@ import Blog from './components/Blog';
 import { notify } from './reducers/notificationReducer';
 
 import './App.css';
-import { Container } from 'semantic-ui-react'
-
+import { Container, Menu, Button, Header, Icon, Form } from 'semantic-ui-react';
 
 class App extends React.Component {
   constructor(props) {
@@ -143,87 +137,113 @@ class App extends React.Component {
 
     if (this.state.user === null) {
       return (
-        <div className="login-form">
-          <h2>Kirjaudu sovellukseen</h2>
-          {this.state.error && error()}
-          <form onSubmit={this.login}>
-            <div>
-              käyttäjätunnus
-              <input
-                type="text"
-                name="username"
-                value={this.state.username}
-                onChange={this.handleLoginFieldChange}
-              />
-            </div>
-            <div>
-              salasana
-              <input
-                type="password"
-                name="password"
-                value={this.state.password}
-                onChange={this.handleLoginFieldChange}
-              />
-            </div>
-            <button>kirjaudu</button>
-          </form>
-        </div>
+        <Container>
+          <div className="login-form">
+            <h2>Kirjaudu sovellukseen</h2>
+            {this.state.error && error()}
+            <Form onSubmit={this.login}>
+              <div>
+                <Form.Field>
+                  <label>käyttäjätunnus</label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={this.state.username}
+                    onChange={this.handleLoginFieldChange}
+                  />
+                </Form.Field>
+              </div>
+              <div>
+                <Form.Field>
+                  <label>salasana</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={this.state.password}
+                    onChange={this.handleLoginFieldChange}
+                  />
+                </Form.Field>
+              </div>
+              <br />
+              <Button color="teal">kirjaudu</Button>
+            </Form>
+          </div>
+        </Container>
       );
     }
 
     return (
       <Container>
-      <Router>
-        <div>
-          <h1>Blog app</h1>
+        <Router>
           <div>
-            <Link to="/">blogs</Link> &nbsp;
-            <Link to="/users">users</Link>
-            {' - '} {this.state.user.name} logged in{' '}
-            <button onClick={this.logOut}>log out</button>
-          </div>
+            <Header as="h2">
+              <Icon name="book" />
+              <Header.Content>Blog App</Header.Content>
+            </Header>
 
-          <Notification />
+            <Menu color="teal" inverted size="small">
+              <Menu.Item link>
+                <Link to="/">blogs</Link>
+              </Menu.Item>
+              <Menu.Item link>
+                <Link to="/users">users</Link>
+              </Menu.Item>
 
-          <Toggleable
-            buttonLabel="new blog"
-            ref={component => (this.newBlogForm = component)}
-          >
-            <NewBlogForm
-              setNotification={this.setNotification}
-              setError={this.setError}
-              getBlogs={this.getBlogs}
-              toggle={() => this.newBlogForm.toggleVisibility()}
+              <Menu.Menu position="right">
+                <Menu.Item header>{this.state.user.name} logged in</Menu.Item>
+
+                <Menu.Item>
+                  <Button color="blue" onClick={this.logOut}>
+                    log out
+                  </Button>
+                </Menu.Item>
+              </Menu.Menu>
+            </Menu>
+
+            <Notification />
+
+            <Toggleable
+              buttonLabel="new blog"
+              ref={component => (this.newBlogForm = component)}
+            >
+              <NewBlogForm
+                setNotification={this.setNotification}
+                setError={this.setError}
+                getBlogs={this.getBlogs}
+                toggle={() => this.newBlogForm.toggleVisibility()}
+              />
+            </Toggleable>
+
+            <Route
+              exact
+              path="/"
+              render={() => <BlogList blogs={this.state.blogs} />}
             />
-          </Toggleable>
 
-          <Route
-            exact
-            path="/"
-            render={() => <BlogList blogs={this.state.blogs} />}
-          />
+            <Route
+              exact
+              path="/blogs/:id"
+              render={({ match }) => (
+                <Blog
+                  blog={blogById(match.params.id)}
+                  giveLike={this.giveLike}
+                />
+              )}
+            />
 
-          <Route
-            exact
-            path="/blogs/:id"
-            render={({ match }) => (
-              <Blog blog={blogById(match.params.id)} giveLike={this.giveLike} />
-            )}
-          />
+            <Route
+              exact
+              path="/users"
+              render={() => <Users users={this.state.users} />}
+            />
 
-          <Route
-            exact
-            path="/users"
-            render={() => <Users users={this.state.users} />}
-          />
-
-          <Route
-            exact
-            path="/users/:id"
-            render={({ match }) => <User user={userById(match.params.id)} />}
-          />
-        </div>
-      </Router>
+            <Route
+              exact
+              path="/users/:id"
+              render={({ match }) => <User user={userById(match.params.id)} />}
+            />
+          </div>
+        </Router>
       </Container>
     );
   }

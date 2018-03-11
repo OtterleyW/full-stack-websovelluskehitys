@@ -1,5 +1,4 @@
 import React from 'react';
-import Blog from '../components/Blog';
 import { Link } from 'react-router-dom';
 import { Table } from 'semantic-ui-react';
 

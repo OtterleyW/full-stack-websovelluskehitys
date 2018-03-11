@@ -1,20 +1,28 @@
 import React from 'react';
-const User = ({user}) => {
+import { List } from 'semantic-ui-react';
 
-  if(!user){
-    return null
+const User = ({ user }) => {
+  if (!user) {
+    return null;
   }
-  console.log(user)
+  console.log(user);
 
-  const blogs = user.blogs.map(blog => <p key={blog._id}>{blog.title}</p>)
-  return(
-  <div>
-    <h2>{user.name}</h2>
+  const blogs = user.blogs.map(blog => (
+    <List.Item key={blog._id}>
+      <List.Icon name="bookmark" />
+      <List.Content> {blog.title}</List.Content>
+    </List.Item>
+  ));
+  return (
+    <div>
+      <h2>{user.name}</h2>
 
-    <h3>Added blogs</h3>
-    {blogs}
-    
-  </div>
-)}
+      <h3>Added blogs</h3>
+      <List divided verticalAlign="middle">
+        {blogs}
+      </List>
+    </div>
+  );
+};
 
-export default User
+export default User;

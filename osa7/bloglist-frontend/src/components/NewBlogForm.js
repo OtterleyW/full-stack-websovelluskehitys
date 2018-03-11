@@ -2,6 +2,7 @@ import React from 'react';
 import blogService from '../services/blogs';
 import { notify } from '../reducers/notificationReducer';
 import { connect } from 'react-redux';
+import { Form, Button } from 'semantic-ui-react';
 
 class NewBlogForm extends React.Component {
   constructor(props) {
@@ -52,36 +53,44 @@ class NewBlogForm extends React.Component {
     return (
       <div>
         <h2>Add new blog</h2>
-        <form onSubmit={this.createBlog}>
+        <Form onSubmit={this.createBlog}>
           <div>
-            title
-            <input
-              type="text"
-              name="title"
-              value={this.state.title}
-              onChange={this.handleLoginFieldChange}
-            />
+            <Form.Field>
+              <label>title</label>
+              <input
+                type="text"
+                name="title"
+                value={this.state.title}
+                onChange={this.handleLoginFieldChange}
+              />
+            </Form.Field>
           </div>
           <div>
-            author
-            <input
-              type="text"
-              name="author"
-              value={this.state.author}
-              onChange={this.handleLoginFieldChange}
-            />
+            <Form.Field>
+            <label>author</label>
+              <input
+                type="text"
+                name="author"
+                value={this.state.author}
+                onChange={this.handleLoginFieldChange}
+              />
+            </Form.Field>
           </div>
           <div>
-            url
-            <input
-              type="text"
-              name="url"
-              value={this.state.url}
-              onChange={this.handleLoginFieldChange}
-            />
+            <Form.Field>
+            <label>url</label>
+              <input
+                type="text"
+                name="url"
+                value={this.state.url}
+                onChange={this.handleLoginFieldChange}
+              />
+            </Form.Field>
           </div>
-          <button>Save</button>
-        </form>
+          <br />
+          <Button basic color='green'>Save</Button>
+          <br /><br />
+        </Form>
       </div>
     );
   }
