@@ -8,7 +8,7 @@ const Blog = require('./models/blog');
 const middleware = require('./utils/middleware');
 const blogsRouter = require('./controllers/blogs');
 const usersRouter = require('./controllers/users');
-const loginRouter = require('./controllers/login')
+const loginRouter = require('./controllers/login');
 
 const config = require('./utils/config');
 
@@ -18,13 +18,12 @@ mongoose.Promise = global.Promise;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(middleware.logger);
-app.use(middleware.tokenExtractor)
+app.use(middleware.tokenExtractor);
 
 app.use('/api/blogs', blogsRouter);
 app.use('/api/users', usersRouter);
-app.use('/api/login', loginRouter)
-app.use(express.static('build'))
-
+app.use('/api/login', loginRouter);
+app.use(express.static('build'));
 
 app.use(middleware.error);
 
